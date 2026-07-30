@@ -33,5 +33,15 @@ namespace Stenford.Common.Constants
 		public const string SalesPersonDeleted = "Sales person deleted successfully.";
 
 		public const string SalesPersonFetched = "Sales person details fetched successfully.";
+
+		public const string ShowroomListFetched = "Showroom list fetched successfully.";
+
+		public const string ShowroomAdded = "Showroom added successfully.";
+
+		public const string ShowroomUpdated = "Showroom updated successfully.";
+
+		public const string ShowroomNotFound = "Showroom not found.";
+
+		public const string ShowroomDeleted = "Showroom deleted successfully.";
 	}
 }

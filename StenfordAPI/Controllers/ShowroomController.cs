@@ -90,5 +90,20 @@ namespace StenfordAPI.Controllers
 				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
 			}
 		}
+
+		[HttpGet]
+		[Route("details")]
+		public BaseResponse GetShowroomById([FromQuery] int showroomId)
+		{
+			try
+			{
+				var result = _showroomRepository.GetShowroomById(showroomId);
+				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomFetched, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.ShowroomNotFound);
+			}
+			catch (Exception ex)
+			{
+				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+			}
+		}
 	}
 }

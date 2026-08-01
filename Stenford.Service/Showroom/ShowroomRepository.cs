@@ -132,5 +132,59 @@ namespace Stenford.Service.Showroom
 			_context.SaveChanges();
 			return true;
 		}
+
+		public ShowroomDetailDTO GetShowroomById(int showroomId)
+		{
+			var showroom = (from s in _context.ShoShowrooms
+							join state in _context.LocStates on s.StateId equals state.StateId into stateJoin
+							from state in stateJoin.DefaultIfEmpty()
+							join city in _context.LocCities on s.CityId equals city.CityId into cityJoin
+							from city in cityJoin.DefaultIfEmpty()
+							where s.ShowroomId == showroomId && s.IsDeleted == false
+							select new ShowroomDetailDTO
+							{
+								ShowroomId = s.ShowroomId,
+								ShowroomName = s.ShowroomName,
+								DealerName = s.DealerName,
+								PrimaryContact = s.PrimaryContact,
+								Address = s.Address,
+								City = city.CityName,
+								State = state.StateName
+							}).FirstOrDefault();
+
+			if (showroom == null)
+			{
+				return null;
+			}
+
+			var lastVisitDate = _context.VisVisits
+				.Where(v => v.ShowroomId == showroomId && v.IsDeleted == false)
+				.OrderByDescending(v => v.VisitDate)
+				.Select(v => v.VisitDate)
+				.FirstOrDefault();
+
+			if (lastVisitDate == default)
+			{
+				showroom.LastVisit = "No visits yet";
+			}
+			else
+			{
+				showroom.LastVisit = StringUtility.ToRelativeTimeString(lastVisitDate);
+			}
+
+			showroom.VisitTimeline = (from v in _context.VisVisits
+									  join sp in _context.SecSalesPeople on v.SalesPersonId equals sp.SalesPersonId
+									  where v.ShowroomId == showroomId && v.IsDeleted == false
+									  orderby v.VisitDate descending
+									  select new ShowroomVisitTimelineDTO
+									  {
+										  SalesPersonName = sp.SalesPersonName,
+										  VisitDate = v.VisitDate,
+										  DiscussionNotes = v.DiscussionNotes,
+										  Products = v.ProductsDiscussedString.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
+									  }).ToList();
+
+			return showroom;
+		}
 	}
 }

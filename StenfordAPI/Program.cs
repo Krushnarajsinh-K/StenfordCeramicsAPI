@@ -5,6 +5,7 @@ using Stenford.Domain.DataContext;
 using Stenford.Service.Dropdown;
 using Stenford.Service.SalesPerson;
 using Stenford.Service.Showroom;
+using Stenford.Service.Visit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ISalesPersonRepository, SalesPersonRepository>();
 builder.Services.AddScoped<IDropdownRepository, DropdownRepository>();
 builder.Services.AddScoped<IShowroomRepository, ShowroomRepository>();
+builder.Services.AddScoped<IVisitRepository, VisitRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

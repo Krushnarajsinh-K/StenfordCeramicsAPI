@@ -17,5 +17,7 @@ namespace Stenford.Service.Showroom
 		ShowroomDTO EditShowroom(ShowroomDTO showroomDTO, Guid aspnetUserId);
 
 		bool DeleteShowroom(int showroomId, Guid aspnetUserId);
+
+		ShowroomDetailDTO GetShowroomById(int showroomId);
 	}
 }

@@ -36,5 +36,16 @@ namespace StenfordAPI.Helper.Mapper.Showroom
 			IMapper mapper = config.CreateMapper();
 			return mapper.Map<ShowroomDTO, ShowroomModel>(entity);
 		}
+
+		public static ShowroomDetailModel ToModel(this DTO.ShowroomDetailDTO entity)
+		{
+			var config = new MapperConfiguration(cfg =>
+			{
+				cfg.CreateMap<DTO.ShowroomDetailDTO, ShowroomDetailModel>();
+				cfg.CreateMap<DTO.ShowroomVisitTimelineDTO, ShowroomVisitTimelineModel>();
+			});
+			IMapper mapper = config.CreateMapper();
+			return mapper.Map<DTO.ShowroomDetailDTO, ShowroomDetailModel>(entity);
+		}
 	}
 }

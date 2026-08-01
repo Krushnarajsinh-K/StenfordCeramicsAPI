@@ -43,5 +43,13 @@ namespace Stenford.Common.Constants
 		public const string ShowroomNotFound = "Showroom not found.";
 
 		public const string ShowroomDeleted = "Showroom deleted successfully.";
+
+		public const string ShowroomFetched = "Showroom details fetched successfully.";
+
+		public const string VisitListFetched = "Visit list fetched successfully.";
+
+		public const string VisitFetched = "Visit details fetched successfully.";
+
+		public const string VisitNotFound = "Visit not found.";
 	}
 }

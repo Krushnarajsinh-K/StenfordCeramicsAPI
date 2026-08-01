@@ -51,5 +51,9 @@ namespace Stenford.Common.Constants
 		public const string VisitFetched = "Visit details fetched successfully.";
 
 		public const string VisitNotFound = "Visit not found.";
+
+		public const string VisitMapFetched = "Visit map data fetched successfully.";
+
+		public const string DashboardFetched = "Dashboard data fetched successfully.";
 	}
 }

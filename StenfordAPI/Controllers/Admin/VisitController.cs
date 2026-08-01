@@ -2,11 +2,11 @@
 using Stenford.Common.Constants;
 using Stenford.Controllers.Admin;
 using Stenford.Service.Visit;
-using StenfordAPI.Helper.Visit;
+using StenfordAPI.Helper.Mapper.Visit;
 
 namespace StenfordAPI.Controllers.Admin
 {
-	[ApiController]
+    [ApiController]
 	[Route("visits")]
 	public class VisitController : BaseController
 	{
@@ -44,12 +44,28 @@ namespace StenfordAPI.Controllers.Admin
 
 		[HttpGet]
 		[Route("details")]
+		[Route("map/details")]
 		public BaseResponse GetVisitById([FromQuery]int visitId)
 		{
 			try
 			{
 				var result = _visitRepository.GetVisitById(visitId);
 				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.VisitFetched, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.VisitNotFound);
+			}
+			catch (Exception ex)
+			{
+				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+			}
+		}
+
+		[HttpGet]
+		[Route("map/co-ordinates")]
+		public BaseResponse GetVisitMapPoints([FromQuery] int? stateId, [FromQuery] int? cityId, [FromQuery] int? salesPersonId, [FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate)
+		{
+			try
+			{
+				var result = _visitRepository.GetVisitMapPoints(stateId, cityId, salesPersonId, fromDate, toDate);
+				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.VisitMapFetched, result.ToModel()) : ApiException(Enums.StatusCode.ServerError, "GetVisitMapPoints", new Exception("Query failed"), ConstantMessage.InternalServerError);
 			}
 			catch (Exception ex)
 			{

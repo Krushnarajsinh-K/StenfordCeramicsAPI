@@ -80,7 +80,7 @@ namespace Stenford.Domain
 			public int CityId { get; set; }
 			public string? City { get; set; }
 			public string? State { get; set; }
-			public string? AddedAgo { get; set; }
+			public string? Recentvisit { get; set; }
 			public int TotalRecords { get; set; }
 		}
 
@@ -123,6 +123,50 @@ namespace Stenford.Domain
 			public string? VoiceNoteUrl { get; set; }
 			public List<string> VisitingCardImages { get; set; } = new();
 			public List<string> ShowroomImages { get; set; } = new();
+		}
+
+		public class VisitMapDTO
+		{
+			public List<VisitMapPointDTO> Points { get; set; } = new();
+			public List<SalesPersonVisitCountDTO> SalesPersonCounts { get; set; } = new();
+		}
+
+		public class VisitMapPointDTO
+		{
+			public int VisitId { get; set; }
+			public decimal Latitude { get; set; }
+			public decimal Longitude { get; set; }
+			public int SalesPersonId { get; set; }	
+			public string SalesPersonName { get; set; } = null!;
+		}
+
+		public class SalesPersonVisitCountDTO
+		{
+			public int SalesPersonId { get; set; }
+			public string SalesPersonName { get; set; } = null!;
+			public int VisitCount { get; set; }
+		}
+
+		public class DashboardDTO
+		{
+			public string AdminName { get; set; } = null!;
+			public DateTime AdminCreatedAt { get; set; }
+			public int TotalSalespersons { get; set; }
+			public int TotalShowrooms { get; set; }
+			public int TotalVisits { get; set; }
+			public int TodayVisits { get; set; }
+			public int MonthlyVisitsCount { get; set; }
+			public string MonthLabel { get; set; } = null!;
+			public List<RecentVisitDTO> RecentVisits { get; set; } = new();
+		}
+
+		public class RecentVisitDTO
+		{
+			public int VisitId { get; set; }
+			public string ShowroomName { get; set; } = null!;
+			public string SalesPersonName { get; set; } = null!;
+			public DateTime VisitDate { get; set; }
+			public string Location { get; set; } = null!;
 		}
 	}
 }

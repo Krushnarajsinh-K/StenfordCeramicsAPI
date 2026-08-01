@@ -102,5 +102,52 @@ namespace Stenford.Service.Visit
 
 			return visit;
 		}
+
+		public VisitMapDTO GetVisitMapPoints(int? stateId, int? cityId, int? salesPersonId, DateTime? fromDate, DateTime? toDate)
+		{
+			try
+			{
+				// Get all visits that match the filters, along with each salesperson's info
+				var matchingVisits = (from v in _context.VisVisits
+									  join showroom in _context.ShoShowrooms on v.ShowroomId equals showroom.ShowroomId
+									  join sp in _context.SecSalesPeople on v.SalesPersonId equals sp.SalesPersonId
+									  where v.IsDeleted != true &&
+											showroom.IsDeleted != true &&
+											(!stateId.HasValue || showroom.StateId == stateId) &&
+											(!cityId.HasValue || showroom.CityId == cityId) &&
+											(!salesPersonId.HasValue || v.SalesPersonId == salesPersonId) &&
+											(!fromDate.HasValue || v.VisitDate >= fromDate) &&
+											(!toDate.HasValue || v.VisitDate <= toDate)
+									  select new VisitMapPointDTO
+									  {
+										  VisitId = v.VisitId,
+										  Latitude = v.Latitude,
+										  Longitude = v.Longitude,
+										  SalesPersonId = sp.SalesPersonId,
+										  SalesPersonName = sp.SalesPersonName
+									  }).ToList();
+
+				// For every salesperson (even ones with 0 matching visits), count their visits
+				var salesPersonCounts = _context.SecSalesPeople
+					.ToList()
+					.Select(sp => new SalesPersonVisitCountDTO
+					{
+						SalesPersonId = sp.SalesPersonId,
+						SalesPersonName = sp.SalesPersonName,
+						VisitCount = matchingVisits.Count(v => v.SalesPersonId == sp.SalesPersonId)
+					})
+					.ToList();
+
+				return new VisitMapDTO
+				{
+					Points = matchingVisits,
+					SalesPersonCounts = salesPersonCounts
+				};
+			}
+			catch
+			{
+				return null;
+			}
+		}
 	}
 }

@@ -19,4 +19,26 @@
 		public List<string> VisitingCardImages { get; set; } = new();
 		public List<string> ShowroomImages { get; set; } = new();
 	}
+
+	public class VisitMapModel
+	{
+		public List<VisitMapPointModel> Points { get; set; } = new();
+		public List<SalesPersonVisitCountModel> SalesPersonCounts { get; set; } = new();
+	}
+
+	public class VisitMapPointModel
+	{
+		public int VisitId { get; set; }
+		public decimal Latitude { get; set; }
+		public decimal Longitude { get; set; }
+		public int SalesPersonId { get; set; }
+		public string SalesPersonName { get; set; } = null!;
+	}
+
+	public class SalesPersonVisitCountModel
+	{
+		public int SalesPersonId { get; set; }
+		public string SalesPersonName { get; set; } = null!;
+		public int VisitCount { get; set; }
+	}
 }

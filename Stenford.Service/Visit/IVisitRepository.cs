@@ -13,5 +13,7 @@ namespace Stenford.Service.Visit
 		List<VisitDTO> GetVisitList(int pageIndex, int pageSize, int? stateId, int? cityId, int? salesPersonId, DateTime? fromDate, DateTime? toDate);
 
 		VisitDTO GetVisitById(int visitId);
+
+		VisitMapDTO GetVisitMapPoints(int? stateId, int? cityId, int? salesPersonId, DateTime? fromDate, DateTime? toDate);
 	}
 }

@@ -50,7 +50,7 @@ namespace Stenford.Service.Showroom
 														 CityId = showroom.CityId,
 														 State = state.StateName,
 														 City = city.CityName,
-														 AddedAgo = StringUtility.ToRelativeTimeString(showroom.CreatedAt),
+														 Recentvisit = StringUtility.ToRelativeTimeString(showroom.CreatedAt),
 													 }).ToList();
 				if (showroomObj.Any())
 				{

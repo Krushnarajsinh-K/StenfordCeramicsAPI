@@ -15,7 +15,7 @@
 		// list/detail-only fields - ignored on add/edit requests
 		public string? City { get; set; }
 		public string? State { get; set; }
-		public string? AddedAgo { get; set; }
+		public string? Recentvisit { get; set; }
 		public int? TotalRecords { get; set; }
 	}
 }

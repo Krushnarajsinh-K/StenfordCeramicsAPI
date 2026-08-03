@@ -1,5 +1,3 @@
-
-
 using Microsoft.EntityFrameworkCore;
 using Stenford.Domain.DataContext;
 using Stenford.Service.Dashboard;
@@ -12,14 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-	options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ApplicationDbContext>();
 
 builder.Services.AddScoped<ISalesPersonRepository, SalesPersonRepository>();
 builder.Services.AddScoped<IDropdownRepository, DropdownRepository>();
 builder.Services.AddScoped<IShowroomRepository, ShowroomRepository>();
 builder.Services.AddScoped<IVisitRepository, VisitRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -15,5 +15,7 @@ namespace Stenford.Service.Visit
 		VisitDTO GetVisitById(int visitId);
 
 		VisitMapDTO GetVisitMapPoints(int? stateId, int? cityId, int? salesPersonId, DateTime? fromDate, DateTime? toDate);
+
+		VisitDTO AddVisit(VisitDTO visitDTO, Guid aspnetUserId);
 	}
 }

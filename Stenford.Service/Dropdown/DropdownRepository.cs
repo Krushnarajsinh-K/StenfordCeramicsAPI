@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Stenford.Domain.DTO;
 
 namespace Stenford.Service.Dropdown
 {
@@ -17,27 +18,39 @@ namespace Stenford.Service.Dropdown
 			_context = context;
 		}
 
-		public List<DTO.StateDropdownDTO> GetStateList()
+		public List<StateDropdownDTO> GetStateList()
 		{
 			return _context.LocStates
 				.Where(s => s.IsDeleted == false && s.CountryId == 101)
 				.OrderBy(s => s.StateName)
-				.Select(s => new DTO.StateDropdownDTO
+				.Select(s => new StateDropdownDTO
 				{
 					Id = s.StateId,
 					Data = s.StateName
 				}).ToList();
 		}
 
-		public List<DTO.CityDropdownDTO> GetCityListByStateId(int stateId)
+		public List<CityDropdownDTO> GetCityListByStateId(int stateId)
 		{
 			return _context.LocCities
 				.Where(c => c.IsDeleted == false && c.StateId == stateId && c.CountryId == 101)
 				.OrderBy(c => c.CityName)
-				.Select(c => new DTO.CityDropdownDTO
+				.Select(c => new CityDropdownDTO
 				{
 					Id = c.CityId,
 					Data = c.CityName
+				}).ToList();
+		}
+
+		public List<ShowroomDropdownDTO> GetShowroomDropdownList()
+		{
+			return _context.ShoShowrooms
+				.Where(s => s.IsDeleted == false)
+				.OrderBy(s => s.ShowroomName)
+				.Select(s => new ShowroomDropdownDTO
+				{
+					Id = s.ShowroomId,
+					Data = s.ShowroomName
 				}).ToList();
 		}
 	}

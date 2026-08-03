@@ -41,11 +41,11 @@ namespace StenfordAPI.Helper.Mapper.Showroom
 		{
 			var config = new MapperConfiguration(cfg =>
 			{
-				cfg.CreateMap<DTO.ShowroomDetailDTO, ShowroomDetailModel>();
-				cfg.CreateMap<DTO.ShowroomVisitTimelineDTO, ShowroomVisitTimelineModel>();
+				cfg.CreateMap<ShowroomDetailDTO, ShowroomDetailModel>();
+				cfg.CreateMap<ShowroomVisitTimelineDTO, ShowroomVisitTimelineModel>();
 			});
 			IMapper mapper = config.CreateMapper();
-			return mapper.Map<DTO.ShowroomDetailDTO, ShowroomDetailModel>(entity);
+			return mapper.Map<ShowroomDetailDTO, ShowroomDetailModel>(entity);
 		}
 	}
 }

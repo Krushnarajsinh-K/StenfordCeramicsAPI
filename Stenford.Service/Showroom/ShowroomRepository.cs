@@ -181,7 +181,7 @@ namespace Stenford.Service.Showroom
 										  SalesPersonName = sp.SalesPersonName,
 										  VisitDate = v.VisitDate,
 										  DiscussionNotes = v.DiscussionNotes,
-										  Products = v.ProductsDiscussedString.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
+										  Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
 									  }).ToList();
 
 			return showroom;

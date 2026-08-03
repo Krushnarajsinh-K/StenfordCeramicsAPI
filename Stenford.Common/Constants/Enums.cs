@@ -45,9 +45,9 @@ namespace Stenford.Common.Constants
 
 		public enum AttachmentType
 		{
-			VoiceNote = 1,
-			VisitingCard = 2,
-			ShowroomImage = 3
+			//VoiceNote = 1,
+			//VisitingCard = 2,
+			ShowroomImage = 1
 		}
 	}
 }

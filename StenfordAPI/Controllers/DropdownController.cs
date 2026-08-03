@@ -50,5 +50,20 @@ namespace StenfordAPI.Controllers
 				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
 			}
 		}
+
+		[HttpGet]
+		[Route("showrooms")]
+		public BaseResponse GetShowroomDropdownList()
+		{
+			try
+			{
+				var showroomList = _dropdownRepository.GetShowroomDropdownList().ToModel();
+				return (showroomList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomDropdownFetched, showroomList, showroomList.Count) : ApiSuccess(Enums.StatusCode.Ok, "Showroom List Empty!");
+			}
+			catch (Exception ex)
+			{
+				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+			}
+		}
 	}
 }

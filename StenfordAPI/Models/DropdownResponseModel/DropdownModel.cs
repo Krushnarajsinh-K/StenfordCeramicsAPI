@@ -13,5 +13,11 @@
 			public int Id { get; set; }
 			public string? Data { get; set; }
 		}
+
+		public class ShowroomDropdownViewModel
+		{
+			public int Id { get; set; }
+			public string? Data { get; set; }
+		}
 	}
 }

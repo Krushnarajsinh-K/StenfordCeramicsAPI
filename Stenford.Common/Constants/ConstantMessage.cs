@@ -55,5 +55,9 @@ namespace Stenford.Common.Constants
 		public const string VisitMapFetched = "Visit map data fetched successfully.";
 
 		public const string DashboardFetched = "Dashboard data fetched successfully.";
+
+		public const string ShowroomDropdownFetched = "Showroom dropdown list fetched successfully.";
+
+		public const string VisitAdded = "Visit added successfully.";
 	}
 }

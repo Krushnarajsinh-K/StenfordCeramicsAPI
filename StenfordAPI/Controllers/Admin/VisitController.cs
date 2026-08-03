@@ -3,6 +3,8 @@ using Stenford.Common.Constants;
 using Stenford.Controllers.Admin;
 using Stenford.Service.Visit;
 using StenfordAPI.Helper.Mapper.Visit;
+using StenfordAPI.Models.Admin;
+using System.Security.AccessControl;
 
 namespace StenfordAPI.Controllers.Admin
 {
@@ -66,6 +68,21 @@ namespace StenfordAPI.Controllers.Admin
 			{
 				var result = _visitRepository.GetVisitMapPoints(stateId, cityId, salesPersonId, fromDate, toDate);
 				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.VisitMapFetched, result.ToModel()) : ApiException(Enums.StatusCode.ServerError, "GetVisitMapPoints", new Exception("Query failed"), ConstantMessage.InternalServerError);
+			}
+			catch (Exception ex)
+			{
+				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+			}
+		}
+
+		[HttpPost]
+		[Route("add-record")]
+		public BaseResponse AddVisitRecord([FromForm] VisitModel model, IFormFile? voiceNote, IFormFile? visitingCardFront, IFormFile? visitingCardBack, List<IFormFile>? showroomImages)
+		{
+			try
+			{
+				var result = _visitRepository.AddVisit(model.ToModel(), Guid.Parse("22222222-2222-2222-2222-222222222222")).ToModel();
+				return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.VisitAdded, result);
 			}
 			catch (Exception ex)
 			{

@@ -49,6 +49,12 @@ public partial class VisVisit
 
     public Guid? DeletedBy { get; set; }
 
+    public string? VoiceNotePath { get; set; }
+
+    public string? VisitingCardFrontPath { get; set; }
+
+    public string? VisitingCardBackPath { get; set; }
+
     [ForeignKey("SalesPersonId")]
     [InverseProperty("VisVisits")]
     public virtual SecSalesPerson SalesPerson { get; set; } = null!;

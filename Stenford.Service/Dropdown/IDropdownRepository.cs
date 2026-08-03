@@ -1,4 +1,5 @@
 ﻿
+using Stenford.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Stenford.Service.Dropdown
 	{
 		List<StateDropdownDTO> GetStateList();
 		List<CityDropdownDTO> GetCityListByStateId(int stateId);
+		List<ShowroomDropdownDTO> GetShowroomDropdownList();
 	}
 }

@@ -14,7 +14,6 @@ namespace StenfordAPI.Controllers.Admin
 	public class SalesPersonController : BaseController
 	{
 		private readonly ISalesPersonRepository _salesPersonRepository;
-
 		public SalesPersonController(ISalesPersonRepository salesPersonRepository)
 		{
 			_salesPersonRepository = salesPersonRepository;
@@ -35,7 +34,8 @@ namespace StenfordAPI.Controllers.Admin
 					return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.InvalidPageNumberOrPageSize);
 				}
 				var salesPersonList = _salesPersonRepository.GetSalesPersonDataList(pageNumber.Value, pageSize.Value, searchText, stateId, cityId).ToModel();
-				return (salesPersonList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonListFetched, salesPersonList, salesPersonList.First()?.TotalRecords) : ApiSuccess(Enums.StatusCode.Ok, "SalesPerson List Empty!");
+				return (salesPersonList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonListFetched, salesPersonList, salesPersonList.First()?.TotalRecords) 
+					: ApiSuccess(Enums.StatusCode.Ok, "SalesPerson List Empty!");
 			}
 			catch (Exception ex)
 			{

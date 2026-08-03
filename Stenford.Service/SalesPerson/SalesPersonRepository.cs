@@ -10,7 +10,7 @@ using static Stenford.Domain.DTO;
 
 namespace Stenford.Service.SalesPerson
 {
-	public class SalesPersonRepository : ISalesPersonRepository
+	public class SalesPersonRepository  : ISalesPersonRepository
 	{
 		private readonly ApplicationDbContext _context;
 
@@ -201,7 +201,7 @@ namespace Stenford.Service.SalesPerson
 											 ShowroomName = showroom.ShowroomName,
 											 Location = city.CityName + ", " + state.StateName,
 											 DiscussionNotes = v.DiscussionNotes,
-											 Products = v.ProductsDiscussedString.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
+											 Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
 										 }).ToList();
 
 			return salesPerson;

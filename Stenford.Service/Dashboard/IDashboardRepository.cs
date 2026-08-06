@@ -10,5 +10,7 @@ namespace Stenford.Service.Dashboard
 	public interface IDashboardRepository
 	{
 		DashboardDTO GetAdminDashboard();
+
+		SalesPersonDashboardDTO GetSalesPersonDashboard();
 	}
 }

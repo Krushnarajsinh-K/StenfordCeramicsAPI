@@ -30,7 +30,7 @@ namespace Stenford.Service.Visit
 											   join sp in _context.SecSalesPeople on v.SalesPersonId equals sp.SalesPersonId
 											   join city in _context.LocCities on showroom.CityId equals city.CityId into cityJoin
 											   from city in cityJoin.DefaultIfEmpty()
-											   where v.IsDeleted != true && showroom.IsDeleted != true && 
+											   where v.IsDeleted != true  && 
 											   (!stateId.HasValue || showroom.StateId == stateId) &&
 											   (!cityId.HasValue || showroom.CityId == cityId) &&
 											   (!salesPersonId.HasValue || v.SalesPersonId == salesPersonId) &&
@@ -46,7 +46,9 @@ namespace Stenford.Service.Visit
 												   SalesPersonName = sp.SalesPersonName,
 												   VisitDate = v.VisitDate,
 												   DiscussionNotes = v.DiscussionNotes,
-												   Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()	
+												   Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
+												   ShowroomId = v.ShowroomId,
+
 											   }).ToList();
 
 				if (visitObj.Any())
@@ -73,10 +75,11 @@ namespace Stenford.Service.Visit
 						 from city in cityJoin.DefaultIfEmpty()
 						 join state in _context.LocStates on showroom.StateId equals state.StateId into stateJoin
 						 from state in stateJoin.DefaultIfEmpty()
-						 where v.VisitId == visitId && v.IsDeleted == false && showroom.IsDeleted == false
+						 where v.VisitId == visitId && v.IsDeleted == false
 						 select new VisitDTO	
 						 {
 							 VisitId = v.VisitId,
+							 ShowroomId = v.ShowroomId,
 							 ShowroomName = showroom.ShowroomName,
 							 Location = city.CityName + ", " + state.StateName,
 							 SalesPersonId = sp.SalesPersonId,
@@ -116,7 +119,7 @@ namespace Stenford.Service.Visit
 									  join showroom in _context.ShoShowrooms on v.ShowroomId equals showroom.ShowroomId
 									  join sp in _context.SecSalesPeople on v.SalesPersonId equals sp.SalesPersonId
 									  where v.IsDeleted != true &&
-											showroom.IsDeleted != true &&
+											
 											(!stateId.HasValue || showroom.StateId == stateId) &&
 											(!cityId.HasValue || showroom.CityId == cityId) &&
 											(!salesPersonId.HasValue || v.SalesPersonId == salesPersonId) &&
@@ -153,7 +156,69 @@ namespace Stenford.Service.Visit
 			}
 		}
 
-		public VisitDTO AddVisit(VisitDTO visitDTO, Guid aspnetUserId)
+		//public VisitDTO AddVisit(VisitDTO visitDTO, Guid aspnetUserId)
+		//{
+		//	VisVisit visit = new VisVisit();
+		//	visit.ShowroomId = visitDTO.ShowroomId;
+		//	visit.SalesPersonId = visitDTO.SalesPersonId;
+		//	visit.VisitDate = visitDTO.VisitDate;
+		//	visit.Latitude = visitDTO.Latitude;
+		//	visit.Longitude = visitDTO.Longitude;
+		//	visit.DiscussionNotes = visitDTO.DiscussionNotes;
+
+		//	visit.ProductsDiscussedString = string.Join("@#$%^&**&^%$#@", visitDTO.Products);
+		//	visit.VoiceNotePath = visitDTO.VoiceNotePath;
+		//	visit.VisitingCardFrontPath = visitDTO.VisitingCardFrontPath;
+		//	visit.VisitingCardBackPath = visitDTO.VisitingCardBackPath;
+		//	visit.IsDeleted = false;
+		//	visit.CreatedAt = DateTime.Now;
+		//	visit.CreatedBy = aspnetUserId;
+		//	visit.ModifiedAt = DateTime.Now;
+		//	visit.ModifiedBy = aspnetUserId;
+
+		//	foreach (var imagePath in visitDTO.ShowroomImages)
+		//	{
+		//		VisVisitWiseAttachment attachment = new VisVisitWiseAttachment();
+		//		attachment.AttachmentType = (int)AttachmentType.ShowroomImage;
+		//		attachment.AttachmentPath = imagePath;
+		//		attachment.IsDeleted = false;
+		//		attachment.CreatedAt = DateTime.Now;
+		//		attachment.CreatedBy = aspnetUserId;
+		//		attachment.ModifiedAt = DateTime.Now;
+		//		attachment.ModifiedBy = aspnetUserId;
+		//		visit.VisVisitWiseAttachments.Add(attachment);
+		//	}
+
+		//	_context.VisVisits.Add(visit);
+		//	_context.SaveChanges();
+		//	visitDTO.VisitId = visit.VisitId;
+		//	return visitDTO;
+		//}
+
+		//public DTO.VisitAddDTO AddVisit(DTO.VisitAddDTO visitDTO, int salesPersonId, Guid aspnetUserId)
+		//{
+		//	VisVisit visit = new VisVisit();
+		//	visit.ShowroomId = visitDTO.ShowroomId;
+		//	visit.SalesPersonId = salesPersonId;
+		//	visit.VisitDate = visitDTO.VisitDate;
+		//	visit.Latitude = visitDTO.Latitude;
+		//	visit.Longitude = visitDTO.Longitude;
+		//	visit.DiscussionNotes = visitDTO.DiscussionNotes;
+		//	visit.ProductsDiscussedString = string.Join("@#$%^&**&^%$#@", visitDTO.Products);
+		//	visit.IsDeleted = false;
+		//	visit.CreatedAt = DateTime.Now;
+		//	visit.CreatedBy = aspnetUserId;
+		//	visit.ModifiedAt = DateTime.Now;
+		//	visit.ModifiedBy = aspnetUserId;
+
+		//	_context.VisVisits.Add(visit);
+		//	_context.SaveChanges();
+
+		//	visitDTO.VisitId = visit.VisitId;
+		//	return visitDTO;
+		//}
+
+		public DTO.VisitAddDTO AddVisit(DTO.VisitAddDTO visitDTO, Guid aspnetUserId)
 		{
 			VisVisit visit = new VisVisit();
 			visit.ShowroomId = visitDTO.ShowroomId;
@@ -162,34 +227,67 @@ namespace Stenford.Service.Visit
 			visit.Latitude = visitDTO.Latitude;
 			visit.Longitude = visitDTO.Longitude;
 			visit.DiscussionNotes = visitDTO.DiscussionNotes;
-
 			visit.ProductsDiscussedString = string.Join("@#$%^&**&^%$#@", visitDTO.Products);
-			visit.VoiceNotePath = visitDTO.VoiceNotePath;
-			visit.VisitingCardFrontPath = visitDTO.VisitingCardFrontPath;
-			visit.VisitingCardBackPath = visitDTO.VisitingCardBackPath;
 			visit.IsDeleted = false;
 			visit.CreatedAt = DateTime.Now;
 			visit.CreatedBy = aspnetUserId;
 			visit.ModifiedAt = DateTime.Now;
 			visit.ModifiedBy = aspnetUserId;
-
-			foreach (var imagePath in visitDTO.ShowroomImages)
-			{
-				VisVisitWiseAttachment attachment = new VisVisitWiseAttachment();
-				attachment.AttachmentType = (int)AttachmentType.ShowroomImage;
-				attachment.AttachmentPath = imagePath;
-				attachment.IsDeleted = false;
-				attachment.CreatedAt = DateTime.Now;
-				attachment.CreatedBy = aspnetUserId;
-				attachment.ModifiedAt = DateTime.Now;
-				attachment.ModifiedBy = aspnetUserId;
-				visit.VisVisitWiseAttachments.Add(attachment);
-			}
-
 			_context.VisVisits.Add(visit);
 			_context.SaveChanges();
 			visitDTO.VisitId = visit.VisitId;
 			return visitDTO;
+		}
+		public List<VisitDTO> GetVisitHistoryList(int pageIndex, int pageSize, DateTime? fromDate, DateTime? toDate)
+		{
+			try
+			{
+				List<VisitDTO> visitObj = (from v in _context.VisVisits
+										   join showroom in _context.ShoShowrooms on v.ShowroomId equals showroom.ShowroomId
+										   join sp in _context.SecSalesPeople on v.SalesPersonId equals sp.SalesPersonId
+										   where v.IsDeleted != true &&
+										   v.SalesPersonId == 2 &&
+										   (!fromDate.HasValue || v.VisitDate >= fromDate) &&
+										   (!toDate.HasValue || v.VisitDate <= toDate)
+										   orderby v.VisitDate descending
+										   select new VisitDTO
+										   {
+											   VisitId = v.VisitId,
+											   ShowroomId = v.ShowroomId,
+											   ShowroomName = showroom.ShowroomName,
+											   SalesPersonId = sp.SalesPersonId,
+											   SalesPersonName = sp.SalesPersonName,
+											   VisitDate = v.VisitDate,
+											   DiscussionNotes = v.DiscussionNotes,
+											   Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
+											   VoiceNotePath = v.VoiceNotePath,
+											   VisitingCardFrontPath = v.VisitingCardFrontPath,
+											   VisitingCardBackPath = v.VisitingCardBackPath
+										   }).ToList();
+
+				if (visitObj.Any())
+				{
+					var totalRecords = visitObj.Count;
+					visitObj = visitObj.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+					var visitIds = visitObj.Select(x => x.VisitId).ToList();
+					var showroomImages = _context.VisVisitWiseAttachments
+						.Where(a => visitIds.Contains(a.VisitId) && a.IsDeleted != true && a.AttachmentType == (int)AttachmentType.ShowroomImage)
+						.ToList();
+
+					foreach (var visit in visitObj)
+					{
+						visit.ShowroomImages = showroomImages.Where(a => a.VisitId == visit.VisitId).Select(a => a.AttachmentPath).ToList();
+					}
+
+					visitObj.First().TotalRecords = totalRecords;
+				}
+				return visitObj;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 	}
 }

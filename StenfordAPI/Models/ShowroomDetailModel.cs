@@ -15,7 +15,8 @@
 
 	public class ShowroomVisitTimelineModel
 	{
-		public string SalesPersonName { get; set; } = null!;
+        public int VisitId { get; set; }
+        public string SalesPersonName { get; set; } = null!;
 		public DateTime VisitDate { get; set; }
 		public string DiscussionNotes { get; set; } = null!;
 		public List<string> Products { get; set; } = new();

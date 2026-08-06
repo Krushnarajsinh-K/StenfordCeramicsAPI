@@ -99,6 +99,7 @@
 
 			public class ShowroomVisitTimelineDTO
 			{
+				public int VisitId { get; set; }
 				public string SalesPersonName { get; set; } = null!;
 				public DateTime VisitDate { get; set; }
 				public string DiscussionNotes { get; set; } = null!;
@@ -107,61 +108,44 @@
 
 		public class VisitDTO
 		{
-			//public int VisitId { get; set; }
-			//public int ShowroomId { get; set; }
-			//public string ShowroomName { get; set; } = null!;
-			//public string Location { get; set; } = null!;
-			//public int SalesPersonId { get; set; }
-			//public string SalesPersonName { get; set; } = null!;
-			//public DateTime VisitDate { get; set; }
-			//public decimal Latitude { get; set; }
-			//public decimal Longitude { get; set; }
-			//public string DiscussionNotes { get; set; } = null!;
-			//public List<string> Products { get; set; } = new();
-			//public int TotalRecords { get; set; }
-			////attachment
-			//public string? VoiceNotePath { get; set; }
-			//public string? VisitingCardFrontPath { get; set; }
-			//public string? VisitingCardBackPath { get; set; }
-			//public List<string> ShowroomImages { get; set; } = new();
-
 			public int VisitId { get; set; }
 			public int ShowroomId { get; set; }
-			public string? ShowroomName { get; set; }      // was: string ... = null!
-			public string? Location { get; set; }          // was: string ... = null!
+			public string ShowroomName { get; set; } = null!;
+			public string Location { get; set; } = null!;
 			public int SalesPersonId { get; set; }
-			public string? SalesPersonName { get; set; }   // was: string ... = null!
+			public string SalesPersonName { get; set; } = null!;
 			public DateTime VisitDate { get; set; }
 			public decimal Latitude { get; set; }
 			public decimal Longitude { get; set; }
 			public string DiscussionNotes { get; set; } = null!;
 			public List<string> Products { get; set; } = new();
 			public int TotalRecords { get; set; }
+
+			public string? VoiceNotePath { get; set; }
+			public string? VisitingCardFrontPath { get; set; }
+			public string? VisitingCardBackPath { get; set; }
+			public List<string> ShowroomImages { get; set; } = new();
+
+			
+		}
+
+		public class VisitAddDTO
+		{
+			public int VisitId { get; set; }
+
+			public int ShowroomId { get; set; }
+			public int SalesPersonId { get; set; }
+			public DateTime VisitDate { get; set; }
+			public decimal Latitude { get; set; }
+			public decimal Longitude { get; set; }
+			public string DiscussionNotes { get; set; } = null!;
+			public List<string> Products { get; set; } = new();
+
 			public string? VoiceNotePath { get; set; }
 			public string? VisitingCardFrontPath { get; set; }
 			public string? VisitingCardBackPath { get; set; }
 			public List<string> ShowroomImages { get; set; } = new();
 		}
-
-		//public class VisitDTO
-		//{
-		//	public int VisitId { get; set; }
-		//	public string ShowroomName { get; set; } = null!;
-		//	public string Location { get; set; } = null!;
-		//	public int SalesPersonId { get; set; }
-		//	public string SalesPersonName { get; set; } = null!;
-		//	public DateTime VisitDate { get; set; }
-		//	public string DiscussionNotes { get; set; } = null!;
-		//	public List<string> Products { get; set; } = new();
-		//	public int TotalRecords { get; set; }
-
-		//	//get by id
-		//	public decimal? Latitude { get; set; }
-		//	public decimal? Longitude { get; set; }
-		//	public string? VoiceNoteUrl { get; set; }
-		//	public List<string> VisitingCardImages { get; set; } = new();
-		//	public List<string> ShowroomImages { get; set; } = new();
-		//}
 
 		public class VisitMapDTO
 		{
@@ -212,5 +196,38 @@
 				public int Id { get; set; }
 				public string? Data { get; set; }
 			}
+
+		public class SalesPersonDashboardDTO
+		{
+			public string SalesPersonName { get; set; } = null!;
+			public DateTime SalesPersonCreatedAt { get; set; }
+			public int TotalVisits { get; set; }
+			public int TodayVisits { get; set; }
+			public int MonthlyVisits { get; set; }
+			public List<SalesPersonRecentVisitDTO> RecentVisits { get; set; } = new();
+		}
+
+		public class SalesPersonRecentVisitDTO
+		{
+			public int VisitId { get; set; }
+			public int ShowroomId { get; set; }
+			public string ShowroomName { get; set; } = null!;
+			public string ShowroomCreatedSalesPersonName { get; set; } = null!;
+			public string CityName { get; set; } = null!;
+			public DateTime VisitDate { get; set; }
+		}
+
+		public class UserJwtDTO
+		{
+			public int AdminID { get; set; }
+			public int SalesPersonID { get; set; }
+			public int RoleId { get; set; }
+			public Guid? AspNetUserID { get; set; }
+			public string RoleName { get; set; }
+			public string EmailId { get; set; }
+			public string UserName { get; set; }
+			public int AspNetUserWiseRoleId { get; set; }
+			public string? Token { get; set; }
 		}
 	}
+}

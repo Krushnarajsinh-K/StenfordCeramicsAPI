@@ -41,7 +41,7 @@ namespace Stenford.Service.Dashboard
 										  join sp in _context.SecSalesPeople on v.SalesPersonId equals sp.SalesPersonId
 										  join city in _context.LocCities on showroom.CityId equals city.CityId into cityJoin
 										  from city in cityJoin.DefaultIfEmpty()
-										  where v.IsDeleted != true && showroom.IsDeleted != true
+										  where v.IsDeleted != true 
 										  orderby v.CreatedAt ascending
 										  select new RecentVisitDTO
 										  {
@@ -51,6 +51,53 @@ namespace Stenford.Service.Dashboard
 											  VisitDate = v.VisitDate,
 											  Location = city.CityName
 										  }).Take(3).ToList();
+
+				return dashboard;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		public SalesPersonDashboardDTO GetSalesPersonDashboard()
+		{
+			try
+			{
+				int salesPersonId = 13; // static placeholder until JWT
+
+				var salesPerson = _context.SecSalesPeople.FirstOrDefault(sp => sp.SalesPersonId == salesPersonId && sp.IsDeleted == false);
+
+				if (salesPerson == null)
+				{
+					return null;
+				}
+
+				var dashboard = new DTO.SalesPersonDashboardDTO();
+				dashboard.SalesPersonName = salesPerson.SalesPersonName;
+				dashboard.SalesPersonCreatedAt = salesPerson.CreatedAt;
+
+				dashboard.TotalVisits = _context.VisVisits.Count(v => v.SalesPersonId == salesPersonId && v.IsDeleted == false);
+				dashboard.TodayVisits = _context.VisVisits.Count(v => v.SalesPersonId == salesPersonId && v.IsDeleted == false && v.VisitDate.Date == DateTime.Now.Date);
+				dashboard.MonthlyVisits = _context.VisVisits.Count(v => v.SalesPersonId == salesPersonId && v.IsDeleted == false && v.VisitDate.Month == DateTime.Now.Month && v.VisitDate.Year == DateTime.Now.Year);
+
+				dashboard.RecentVisits = (from v in _context.VisVisits
+										  join showroom in _context.ShoShowrooms on v.ShowroomId equals showroom.ShowroomId
+										  join city in _context.LocCities on showroom.CityId equals city.CityId into cityJoin
+										  from city in cityJoin.DefaultIfEmpty()
+										  join creator in _context.SecSalesPeople on showroom.CreatedBy equals creator.AspNetUserId into creatorJoin
+										  from creator in creatorJoin.DefaultIfEmpty()
+										  where v.SalesPersonId == salesPersonId && v.IsDeleted != true 
+										  orderby v.VisitDate descending
+										  select new DTO.SalesPersonRecentVisitDTO
+										  {
+											  VisitId = v.VisitId,
+											  ShowroomId = v.ShowroomId,
+											  ShowroomName = showroom.ShowroomName,
+											  ShowroomCreatedSalesPersonName = creator.SalesPersonName,
+											  CityName = city.CityName,
+											  VisitDate = v.VisitDate
+										  }).Take(5).ToList();
 
 				return dashboard;
 			}

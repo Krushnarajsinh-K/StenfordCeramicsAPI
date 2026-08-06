@@ -7,7 +7,7 @@ using StenfordAPI.Helper.Mapper.Dashboard;
 namespace StenfordAPI.Controllers
 {
 	[ApiController]
-	[Route("dashboard")]
+	//[Route("dashboard")]
 	public class DashboardController : BaseController
 	{
 		private readonly IDashboardRepository _dashboardRepository;
@@ -18,13 +18,28 @@ namespace StenfordAPI.Controllers
 		}
 
 		[HttpGet]
-		[Route("admin")]
+		[Route("admin/dashboard")]
 		public BaseResponse GetAdminDashboard()
 		{
 			try
 			{
 				var result = _dashboardRepository.GetAdminDashboard();
 				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.DashboardFetched, result.ToModel()) : ApiException(Enums.StatusCode.ServerError, "GetAdminDashboard", new Exception("Query failed"), ConstantMessage.InternalServerError);
+			}
+			catch (Exception ex)
+			{
+				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+			}
+		}
+
+		[HttpGet]
+		[Route("salesperson/dashboard")]
+		public BaseResponse GetSalesPersonDashboard()
+		{
+			try
+			{
+				var result = _dashboardRepository.GetSalesPersonDashboard();
+				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.DashboardFetched, result.ToModel()) : ApiException(Enums.StatusCode.ServerError, "GetSalesPersonDashboard", new Exception("Query failed"), ConstantMessage.InternalServerError);
 			}
 			catch (Exception ex)
 			{

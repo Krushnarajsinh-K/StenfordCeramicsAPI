@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Mvc;
 using Stenford.Common.Constants;
 using Stenford.Controllers.Admin;
 using Stenford.Service.Visit;
@@ -75,14 +76,54 @@ namespace StenfordAPI.Controllers.Admin
 			}
 		}
 
+		//[HttpPost]
+		//[Route("add-record")]
+		//public BaseResponse AddVisitRecord([FromForm] VisitModel model)
+		//{
+		//	try
+		//	{
+		//		var result = _visitRepository.AddVisit(model.ToModel(), Guid.Parse("22222222-2222-2222-2222-222222222222")).ToModel();
+		//		return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.VisitAdded, result);
+		//	}	
+		//	catch (Exception ex)
+		//	{
+		//		return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+		//	}
+		//}
+
 		[HttpPost]
 		[Route("add-record")]
-		public BaseResponse AddVisitRecord([FromForm] VisitModel model, IFormFile? voiceNote, IFormFile? visitingCardFront, IFormFile? visitingCardBack, List<IFormFile>? showroomImages)
+		public BaseResponse AddVisitRecord([FromForm] VisitAddModel model)
 		{
 			try
 			{
-				var result = _visitRepository.AddVisit(model.ToModel(), Guid.Parse("22222222-2222-2222-2222-222222222222")).ToModel();
-				return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.VisitAdded, result);
+				//var dto = model.ToModel();
+				var result = _visitRepository.AddVisit(model.ToModel(), Guid.Parse("22222222-2222-2222-2222-222222222222"));
+				return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.VisitAdded, result.ToModel());
+			}
+			catch (Exception ex)
+			{
+				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+			}
+		}
+
+		[HttpGet]
+		[Route("history")]
+		public BaseResponse GetVisitHistoryList(int? pageIndex, int? pageSize, DateTime? fromDate, DateTime? toDate)
+		{
+			try
+			{
+				if (!pageIndex.HasValue || !pageSize.HasValue)
+				{
+					return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.PageNumberAndPageSizeRequired);
+				}
+				if (pageIndex <= 0 || pageSize <= 0)
+				{
+					return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.InvalidPageNumberOrPageSize);
+				}
+
+				var result = _visitRepository.GetVisitHistoryList(pageIndex.Value, pageSize.Value, fromDate, toDate);
+				return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.VisitHistoryFetched, result.ToModel());
 			}
 			catch (Exception ex)
 			{

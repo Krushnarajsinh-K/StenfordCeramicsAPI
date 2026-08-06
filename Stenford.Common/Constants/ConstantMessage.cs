@@ -59,5 +59,11 @@ namespace Stenford.Common.Constants
 		public const string ShowroomDropdownFetched = "Showroom dropdown list fetched successfully.";
 
 		public const string VisitAdded = "Visit added successfully.";
+
+		public const string VisitHistoryFetched = "Visit history fetched successfully.";
+
+		public const string InvalidCredentials = "Invalid username or password.";
+
+		public const string LoginSuccessful = "Login successful.";
 	}
 }

@@ -47,5 +47,25 @@ namespace StenfordAPI.Helper.Mapper.Visit
 			IMapper mapper = config.CreateMapper();
 			return mapper.Map<VisitModel, VisitDTO>(entity);
 		}
+
+		public static VisitAddDTO ToModel(this VisitAddModel entity)
+		{
+			var config = new MapperConfiguration(cfg =>
+			{
+				cfg.CreateMap<VisitAddModel, VisitAddDTO>();
+			});
+			IMapper mapper = config.CreateMapper();
+			return mapper.Map<VisitAddModel, VisitAddDTO>(entity);
+		}
+
+		public static VisitAddModel ToModel(this VisitAddDTO entity)
+		{
+			var config = new MapperConfiguration(cfg =>
+			{
+				cfg.CreateMap<VisitAddDTO, VisitAddModel>();
+			});
+			IMapper mapper = config.CreateMapper();
+			return mapper.Map<VisitAddDTO, VisitAddModel>(entity);
+		}
 	}
 }

@@ -16,5 +16,16 @@ namespace StenfordAPI.Helper.Mapper.Dashboard
 			IMapper mapper = config.CreateMapper();
 			return mapper.Map<DashboardDTO, DashboardModel>(entity);
 		}
+
+		public static SalesPersonDashboardModel ToModel(this SalesPersonDashboardDTO entity)
+		{
+			var config = new MapperConfiguration(cfg =>
+			{
+				cfg.CreateMap<SalesPersonDashboardDTO, SalesPersonDashboardModel>();
+				cfg.CreateMap<SalesPersonRecentVisitDTO, SalesPersonRecentVisitModel>();
+			});
+			IMapper mapper = config.CreateMapper();
+			return mapper.Map<SalesPersonDashboardDTO, SalesPersonDashboardModel>(entity);
+		}
 	}
 }

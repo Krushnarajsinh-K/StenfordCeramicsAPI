@@ -178,6 +178,7 @@ namespace Stenford.Service.Showroom
 									  orderby v.VisitDate descending
 									  select new ShowroomVisitTimelineDTO
 									  {
+										  VisitId = v.VisitId,
 										  SalesPersonName = sp.SalesPersonName,
 										  VisitDate = v.VisitDate,
 										  DiscussionNotes = v.DiscussionNotes,

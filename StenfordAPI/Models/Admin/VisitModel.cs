@@ -20,24 +20,22 @@
 		public List<string> ShowroomImages { get; set; } = new();
 	}
 
-	public class VisitAddModel
-	{
-		public int VisitId { get; set; }
-		public int ShowroomId { get; set; }
-		public DateTime VisitDate { get; set; }
-		public decimal Latitude { get; set; }
-		public decimal Longitude { get; set; }
-		public string DiscussionNotes { get; set; } = null!;
-		public List<string> Products { get; set; } = new();
+    public class VisitAddModel
+    {
+        public int ShowroomId { get; set; }
+        public DateTime VisitDate { get; set; }
+        public decimal Latitude { get; set; }
+        public decimal Longitude { get; set; }
+        public string DiscussionNotes { get; set; } = null!;
+        public List<string> Products { get; set; } = new();
 
-		//attachement
-		public IFormFile? VoiceNote { get; set; }
-		public IFormFile? VisitingCardFront { get; set; }
-		public IFormFile? VisitingCardBack { get; set; }
-		public List<IFormFile>? ShowroomImages { get; set; }
-	}
+        public IFormFile? VoiceNote { get; set; }
+        public IFormFile? VisitingCardFront { get; set; }
+        public IFormFile? VisitingCardBack { get; set; }
+        public List<IFormFile>? ShowroomImages { get; set; }
+    }
 
-	public class VisitMapModel
+    public class VisitMapModel
 	{
 		public List<VisitMapPointModel> Points { get; set; } = new();
 		public List<SalesPersonVisitCountModel> SalesPersonCounts { get; set; } = new();

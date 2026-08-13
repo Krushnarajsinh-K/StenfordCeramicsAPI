@@ -12,5 +12,7 @@ namespace Stenford.Service.Account
 	{
 		AspAspNetUser AreUserCredentialsValid(string userName, string password);
 		UserJwtDTO GetAspNetUserDetail(Guid aspNetUserId);
-	}
+
+        ProfileDTO GetProfile(Guid aspNetUserId);
+    }
 }

@@ -20,4 +20,18 @@
 
         public string? Token { get; set; }
 	}
+
+    public class ProfileModel
+    {
+        public int? SalesPersonId { get; set; }
+        public int? AdminId { get; set; }
+        public string Name { get; set; } = null!;
+        public int RoleId { get; set; }
+        public string RoleName { get; set; } = null!;
+        public string? PrimaryContact { get; set; }
+        public string? State { get; set; }
+        public int? TotalVisits { get; set; }
+        public int? ShowroomCount { get; set; }
+        public int? ThisMonthVisits { get; set; }
+    }
 }

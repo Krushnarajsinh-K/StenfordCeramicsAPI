@@ -15,5 +15,15 @@ namespace StenfordAPI.Helper.Mapper.Account
 			IMapper mapper = config.CreateMapper();
 			return mapper.Map<UserJwtDTO, LoginResponseModel>(entity);
 		}
-	}
+
+        public static ProfileModel ToModel(this ProfileDTO entity)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProfileDTO, ProfileModel>();
+            });
+            IMapper mapper = config.CreateMapper();
+            return mapper.Map<ProfileDTO, ProfileModel>(entity);
+        }
+    }
 }

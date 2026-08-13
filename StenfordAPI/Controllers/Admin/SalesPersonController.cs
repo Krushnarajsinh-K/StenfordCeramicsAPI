@@ -3,12 +3,16 @@ using QCLorence.API.Helper.StringUtility;
 using Stenford.Common.Constants;
 using Stenford.Controllers.Admin;
 using Stenford.Service.SalesPerson;
+using StenfordAPI.Authmanager;
 using StenfordAPI.Helper.Mapper.SalesPerson;
+using StenfordAPI.Models;
 using StenfordAPI.Models.Admin;
+using static Stenford.Common.Constants.Enums;
 
 namespace StenfordAPI.Controllers.Admin
 {
-	[ApiController]
+    [AuthManager(UserType.Admin,UserType.SalesPerson)]
+    [ApiController]
 	[Route("admin/salespersons")]
 
 	public class SalesPersonController : BaseController
@@ -20,7 +24,8 @@ namespace StenfordAPI.Controllers.Admin
 		}
 
 		[HttpGet]
-		[Route("list")]
+
+        [Route("list")]
 		public BaseResponse GetSalesPersonList([FromQuery] string? searchText, [FromQuery] int? pageNumber, [FromQuery] int? pageSize, [FromQuery] int? stateId, [FromQuery] int? cityId)
 		{
 			try
@@ -35,7 +40,7 @@ namespace StenfordAPI.Controllers.Admin
 				}
 				var salesPersonList = _salesPersonRepository.GetSalesPersonDataList(pageNumber.Value, pageSize.Value, searchText, stateId, cityId).ToModel();
 				return (salesPersonList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonListFetched, salesPersonList, salesPersonList.First()?.TotalRecords) 
-					: ApiSuccess(Enums.StatusCode.Ok, "SalesPerson List Empty!");
+					: ApiSuccess(Enums.StatusCode.Ok, "SalesPerson List Empty!",new List<int>());
 			}
 			catch (Exception ex)
 			{
@@ -47,7 +52,8 @@ namespace StenfordAPI.Controllers.Admin
 		[Route("add")]
 		public BaseResponse AddSalesPerson([FromBody] SalesPersonModel model)
 		{
-			try
+            string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            try
 			{
 				if (_salesPersonRepository.IsSalesPersonNameExists(model.SalesPersonName))
 				{
@@ -56,8 +62,10 @@ namespace StenfordAPI.Controllers.Admin
 				var dto = model.ToModel();
 				dto.Password = StringUtility.EncryptString(model.Password);
 
-				var result = _salesPersonRepository.AddSalesPerson(dto, "11111111-1111-1111-1111-111111111111");
-				return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonAdded, result.ToModel());
+                var result = _salesPersonRepository.AddSalesPerson(dto, CV.AspNetUserId(token));
+                //var result = _salesPersonRepository.AddSalesPerson(dto, "11111111-1111-1111-1111-111111111111");
+
+                return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonAdded, result.ToModel());
 			}
 			catch (Exception ex)
 			{
@@ -69,12 +77,14 @@ namespace StenfordAPI.Controllers.Admin
 		[Route("edit")]
 		public BaseResponse EditSalesPerson([FromBody] SalesPersonModel model)
 		{
-			try
+            string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            try
 			{
 				var dto = model.ToModel();
-				var result = _salesPersonRepository.EditSalesPerson(dto, "11111111-1111-1111-1111-111111111111");
+				var result = _salesPersonRepository.EditSalesPerson(dto, CV.AspNetUserId(token));
+				//var result = _salesPersonRepository.EditSalesPerson(dto, "11111111-1111-1111-1111-111111111111");
 
-				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonUpdated, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
+                return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonUpdated, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
 			}
 			catch (Exception ex)
 			{
@@ -86,10 +96,12 @@ namespace StenfordAPI.Controllers.Admin
 		[Route("delete")]
 		public BaseResponse DeleteSalesPerson([FromQuery] int salesPersonId)
 		{
-			try
+            string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            try
 			{
-				var result = _salesPersonRepository.DeleteSalesPerson(salesPersonId, "11111111-1111-1111-1111-111111111111");
-				return result ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonDeleted) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
+				var result = _salesPersonRepository.DeleteSalesPerson(salesPersonId, CV.AspNetUserId(token));
+				//var result = _salesPersonRepository.DeleteSalesPerson(salesPersonId, "11111111-1111-1111-1111-111111111111");
+                return result ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonDeleted) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
 			}
 			catch (Exception ex)
 			{
@@ -101,7 +113,7 @@ namespace StenfordAPI.Controllers.Admin
 		[Route("details")]
 		public BaseResponse GetSalesPersonById([FromQuery] int salesPersonId)
 		{
-			try
+            try
 			{
 				var result = _salesPersonRepository.GetSalesPersonById(salesPersonId);
 				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonFetched, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
@@ -111,5 +123,7 @@ namespace StenfordAPI.Controllers.Admin
 				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
 			}
 		}
-	}
+
+        
+    }
 }

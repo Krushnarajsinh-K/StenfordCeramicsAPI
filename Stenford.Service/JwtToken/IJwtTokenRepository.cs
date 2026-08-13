@@ -11,6 +11,7 @@ namespace Stenford.Service.JwtToken
 	public interface IJwtTokenRepository
 	{
 		public string GenerateJWTAuthetication(UserJwtDTO userJwt);
-		//public bool ValidateToken(string token, out JwtSecurityToken jwtSecurityToken);
+
+		public bool ValidateToken(string token, out JwtSecurityToken jwtSecurityToken);
 	}
 }

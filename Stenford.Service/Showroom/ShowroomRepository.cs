@@ -31,10 +31,10 @@ namespace Stenford.Service.Showroom
 													 where showroom.IsDeleted != true && showroom.CountryId == 101 &&
 													 (!stateId.HasValue || showroom.StateId == stateId) &&
 													 (!cityId.HasValue || showroom.CityId == cityId) &&
-													(string.IsNullOrEmpty(searchText) || showroom.ShowroomName.ToLower().Contains(searchText.ToLower()) || showroom.DealerName.ToLower().Contains(searchText.ToLower()) ||
-													(city != null && city.CityName.ToLower().Contains(searchText.ToLower())) ||
+													(string.IsNullOrEmpty(searchText) || showroom.ShowroomName.ToLower().Contains(searchText.ToLower()) || showroom.DealerName.ToLower().Contains(searchText.ToLower()) || showroom.PrimaryContact.ToLower().Contains(searchText.ToLower()) ||
+                                                    (city != null && city.CityName.ToLower().Contains(searchText.ToLower())) ||
 													(state != null && state.StateName.ToLower().Contains(searchText.ToLower())))
-												 orderby showroom.ShowroomId ascending
+												 orderby showroom.ShowroomId descending
 													 select new ShowroomDTO
 													 {
 														 ShowroomId = showroom.ShowroomId,
@@ -185,7 +185,37 @@ namespace Stenford.Service.Showroom
 										  Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
 									  }).ToList();
 
-			return showroom;
+			//--------------------------------------------------------
+
+            showroom.Photos = new List<string>();
+
+            var visits = _context.VisVisits
+                .Where(v => v.ShowroomId == showroomId && v.IsDeleted == false)
+                .OrderBy(v => v.VisitDate)
+                .ToList();
+
+            foreach (var visit in visits)
+            {
+                if (!string.IsNullOrEmpty(visit.VisitingCardFrontPath))
+                {
+                    showroom.Photos.Add(visit.VisitingCardFrontPath);
+                }
+
+                if (!string.IsNullOrEmpty(visit.VisitingCardBackPath))
+                {
+                    showroom.Photos.Add(visit.VisitingCardBackPath);
+                }
+
+                var attachments = _context.VisVisitWiseAttachments
+                    .Where(a => a.VisitId == visit.VisitId && a.IsDeleted == false)
+                    .OrderBy(a => a.CreatedAt)
+                    .Select(a => a.AttachmentPath)
+                    .ToList();
+
+                showroom.Photos.AddRange(attachments);
+            }
+
+            return showroom;
 		}
 	}
 }

@@ -36,5 +36,15 @@ namespace StenfordAPI.Helper.Mapper.Dropdowns
 			IMapper mapper = config.CreateMapper();
 			return mapper.Map<List<ShowroomDropdownDTO>, List<ShowroomDropdownViewModel>>(entity);
 		}
-	}
+
+        public static List<SalesPersonDropdownViewModel> ToModel(this List<SalesPersonDropdownDTO> entity)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<SalesPersonDropdownDTO, SalesPersonDropdownViewModel>();
+            });
+            IMapper mapper = config.CreateMapper();
+            return mapper.Map<List<SalesPersonDropdownDTO>, List<SalesPersonDropdownViewModel>>(entity);
+        }
+    }
 }

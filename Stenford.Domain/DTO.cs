@@ -57,6 +57,8 @@
 			}
 			public class VisitTimelineDTO
 			{
+				public int VisitId { get; set; }
+
 				public string SalesPersonName { get; set; } = null!;
 				public DateTime VisitDate { get; set; }
 				public string ShowroomName { get; set; } = null!;
@@ -95,7 +97,9 @@
 				public string State { get; set; } = null!;
 				public string LastVisit { get; set; } = null!;
 				public List<ShowroomVisitTimelineDTO> VisitTimeline { get; set; } = new();
-			}
+
+				public List<string> Photos { get; set; } = new();
+        }
 
 			public class ShowroomVisitTimelineDTO
 			{
@@ -212,7 +216,7 @@
 			public int VisitId { get; set; }
 			public int ShowroomId { get; set; }
 			public string ShowroomName { get; set; } = null!;
-			public string ShowroomCreatedSalesPersonName { get; set; } = null!;
+			public string ShowroomCreatedBySalesPersonName { get; set; } = null!;
 			public string CityName { get; set; } = null!;
 			public DateTime VisitDate { get; set; }
 		}
@@ -229,5 +233,43 @@
 			public int AspNetUserWiseRoleId { get; set; }
 			public string? Token { get; set; }
 		}
-	}
+
+        public class SalesPersonDropdownDTO
+        {
+            public int Id { get; set; }
+            public string? Data { get; set; }
+        }
+
+        public class ProfileDTO
+        {
+            public int? SalesPersonId { get; set; }
+            public int? AdminId { get; set; }
+            public string Name { get; set; } = null!;
+            public int RoleId { get; set; }
+            public string RoleName { get; set; } = null!;
+            public string? PrimaryContact { get; set; }
+            public string? State { get; set; }
+            public int? TotalVisits { get; set; }
+            public int? ShowroomCount { get; set; }
+            public int? ThisMonthVisits { get; set; }
+        }
+
+        public class ReportDTO
+        {
+            public int TotalVisits { get; set; }
+            public int ShowroomCount { get; set; }
+            public int StateCount { get; set; }
+            public double AvgPerDay { get; set; }
+            public List<ReportRowDTO> VisitReport { get; set; } = new();
+        }
+
+        public class ReportRowDTO
+        {
+            public string ShowroomName { get; set; } = null!;
+            public string City { get; set; } = null!;
+            public int VisitCount { get; set; }
+            public DateTime LastVisit { get; set; }
+            public int TotalRecords { get; set; }
+        }
+    }
 }

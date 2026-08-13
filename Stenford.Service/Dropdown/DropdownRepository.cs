@@ -53,5 +53,17 @@ namespace Stenford.Service.Dropdown
 					Data = s.ShowroomName
 				}).ToList();
 		}
-	}
+
+        public List<SalesPersonDropdownDTO> GetSalesPersonDropdownList()
+        {
+            return _context.SecSalesPeople
+                //.Where(s => s.IsDeleted == false)
+                .OrderBy(s => s.SalesPersonName)
+                .Select(s => new SalesPersonDropdownDTO
+                {
+                    Id = s.SalesPersonId,
+                    Data = s.SalesPersonName
+                }).ToList();
+        }
+    }
 }

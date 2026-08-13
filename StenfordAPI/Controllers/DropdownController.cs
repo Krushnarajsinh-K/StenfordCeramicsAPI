@@ -2,12 +2,15 @@
 using Stenford.Common.Constants;
 using Stenford.Controllers.Admin;
 using Stenford.Service.Dropdown;
+using StenfordAPI.Authmanager;
 using StenfordAPI.Helper.Mapper.Dropdowns;
+using static Stenford.Common.Constants.Enums;
 
 namespace StenfordAPI.Controllers
 {
 	[ApiController]
-	[Route("/dropdowns")]
+    [AuthManager(UserType.SalesPerson,UserType.Admin)]
+    [Route("/dropdowns")]
 	public class DropdownController : BaseController
 	{
 		private readonly IDropdownRepository _dropdownRepository;
@@ -65,5 +68,20 @@ namespace StenfordAPI.Controllers
 				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
 			}
 		}
-	}
+
+        [HttpGet]
+        [Route("salesperson")]
+        public BaseResponse GetSalesPersonDropdownList()
+        {
+            try
+            {
+                var salespersonList = _dropdownRepository.GetSalesPersonDropdownList().ToModel();
+                return (salespersonList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonDropdownFetched, salespersonList, salespersonList.Count) : ApiSuccess(Enums.StatusCode.Ok, "Salesperson List Empty!");
+            }
+            catch (Exception ex)
+            {
+                return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+            }
+        }
+    }
 }

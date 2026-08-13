@@ -18,7 +18,7 @@ namespace Stenford.Service.Visit
 
 		VisitAddDTO AddVisit(VisitAddDTO visitDTO, Guid aspnetUserId);
 
-		List<VisitDTO> GetVisitHistoryList(int pageIndex, int pageSize, DateTime? fromDate, DateTime? toDate);
+        List<VisitDTO> GetVisitHistoryList(Guid aspNetUserId, int pageIndex, int pageSize, DateTime? fromDate, DateTime? toDate);
 
-	}
+    }
 }

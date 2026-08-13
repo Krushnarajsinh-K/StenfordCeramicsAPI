@@ -48,24 +48,38 @@ namespace StenfordAPI.Helper.Mapper.Visit
 			return mapper.Map<VisitModel, VisitDTO>(entity);
 		}
 
-		public static VisitAddDTO ToModel(this VisitAddModel entity)
-		{
-			var config = new MapperConfiguration(cfg =>
-			{
-				cfg.CreateMap<VisitAddModel, VisitAddDTO>();
-			});
-			IMapper mapper = config.CreateMapper();
-			return mapper.Map<VisitAddModel, VisitAddDTO>(entity);
-		}
+        //public static VisitAddDTO ToModel(this VisitAddModel entity)
+        //{
+        //	var config = new MapperConfiguration(cfg =>
+        //	{
+        //		cfg.CreateMap<VisitAddModel, VisitAddDTO>();
+        //	});
+        //	IMapper mapper = config.CreateMapper();
+        //	return mapper.Map<VisitAddModel, VisitAddDTO>(entity);
+        //}
 
-		public static VisitAddModel ToModel(this VisitAddDTO entity)
-		{
-			var config = new MapperConfiguration(cfg =>
-			{
-				cfg.CreateMap<VisitAddDTO, VisitAddModel>();
-			});
-			IMapper mapper = config.CreateMapper();
-			return mapper.Map<VisitAddDTO, VisitAddModel>(entity);
-		}
-	}
+        public static VisitAddDTO ToModel(this VisitAddModel entity)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<VisitAddModel, VisitAddDTO>()
+                    .ForMember(dest => dest.ShowroomImages, opt => opt.Ignore())
+                    .ForMember(dest => dest.VoiceNotePath, opt => opt.Ignore())
+                    .ForMember(dest => dest.VisitingCardFrontPath, opt => opt.Ignore())
+                    .ForMember(dest => dest.VisitingCardBackPath, opt => opt.Ignore());
+            });
+            IMapper mapper = config.CreateMapper();
+            return mapper.Map<VisitAddModel, VisitAddDTO>(entity);
+        }
+
+        public static VisitModel ToModel(this VisitAddDTO entity)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<VisitAddDTO, VisitModel>();
+            });
+            IMapper mapper = config.CreateMapper();
+            return mapper.Map<VisitAddDTO, VisitModel>(entity);
+        }
+    }
 }

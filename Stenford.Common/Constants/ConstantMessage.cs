@@ -8,7 +8,11 @@ namespace Stenford.Common.Constants
 {
 	public class ConstantMessage
 	{
-		public const string SalesPersonListFetched = "SalesPerson list fetched successfully.";
+        public const string ImageBaseUrl = "https://stendfordappstorage.theuniqueitsolution.com/stendfordappstorage/";
+		 
+
+
+        public const string SalesPersonListFetched = "SalesPerson list fetched successfully.";
 
 		public const string InternalServerError = "Internal Server Error Occurred!";
 
@@ -65,5 +69,11 @@ namespace Stenford.Common.Constants
 		public const string InvalidCredentials = "Invalid username or password.";
 
 		public const string LoginSuccessful = "Login successful.";
-	}
+
+        public const string SalesPersonDropdownFetched = "SalesPerson dropdown details fetched successfully.";
+
+        public const string AdminProfileFetched = "Admin profile fetched successfully.";
+
+        public const string ReportFetched = "Report data fetched successfully.";
+    }
 }

@@ -11,6 +11,6 @@ namespace Stenford.Service.Dashboard
 	{
 		DashboardDTO GetAdminDashboard();
 
-		SalesPersonDashboardDTO GetSalesPersonDashboard();
+		SalesPersonDashboardDTO GetSalesPersonDashboard(Guid aspNetUserId);
 	}
 }

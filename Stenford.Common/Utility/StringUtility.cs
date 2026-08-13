@@ -20,5 +20,18 @@ namespace Stenford.Common.Utility
 			if (span.TotalDays < 60) return "1 month ago";
 			return $"{(int)(span.TotalDays / 30)} months ago";
 		}
-	}
+
+        //public static string ToRelativeTimeString(DateTime dateTime)
+        //{
+        //    int daysSince = (DateTime.Now.Date - dateTime.Date).Days;
+
+        //    if (daysSince == 0) return "Today";
+        //    if (daysSince == 1) return "Yesterday";
+        //    if (daysSince < 7) return $"{daysSince} days ago";
+        //    if (daysSince < 14) return "1 week ago";
+        //    if (daysSince < 30) return $"{daysSince / 7} weeks ago";
+        //    if (daysSince < 60) return "1 month ago";
+        //    return $"{daysSince / 30} months ago";
+        //}
+    }
 }

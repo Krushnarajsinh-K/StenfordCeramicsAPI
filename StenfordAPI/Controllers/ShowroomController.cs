@@ -3,13 +3,17 @@ using Stenford.Common.Constants;
 using Stenford.Controllers.Admin;
 using Stenford.Service.SalesPerson;
 using Stenford.Service.Showroom;
+using StenfordAPI.Authmanager;
 using StenfordAPI.Helper.Mapper.Showroom;
 using StenfordAPI.Models;
+using static Stenford.Common.Constants.Enums;
 
 namespace StenfordAPI.Controllers
 {
 	[ApiController]
-	[Route("showrooms")]
+    [AuthManager(UserType.Admin,UserType.SalesPerson)]
+
+    [Route("showrooms")]
 	public class ShowroomController : BaseController
 	{
 		private readonly IShowroomRepository _showroomRepository;
@@ -36,7 +40,7 @@ namespace StenfordAPI.Controllers
 				}
 
 				var showroomList = _showroomRepository.GetShowroomDataList(searchText, pageNumber.Value, pageSize.Value, stateId, cityId).ToModel();
-				return (showroomList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomListFetched, showroomList, showroomList.First().TotalRecords) : ApiSuccess(Enums.StatusCode.Ok, "Showroom List Empty!");
+				return (showroomList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomListFetched, showroomList, showroomList.First().TotalRecords) : ApiSuccess(Enums.StatusCode.Ok, "Showroom List Empty!", new List<int>());
 			}
 			catch (Exception ex)
 			{
@@ -48,11 +52,13 @@ namespace StenfordAPI.Controllers
 		[Route("add")]
 		public BaseResponse AddShowroom([FromBody] ShowroomModel model)
 		{
-			try
+            string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            try
 			{
 				var dto = model.ToModel();
-				var result = _showroomRepository.AddShowroom(dto, Guid.Parse("11111111-1111-1111-1111-111111111111"));
-				return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomAdded, result.ToModel());
+				var result = _showroomRepository.AddShowroom(dto, Guid.Parse(CV.AspNetUserId(token)));
+				//var result = _showroomRepository.AddShowroom(dto, Guid.Parse("11111111-1111-1111-1111-111111111111"));
+                return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomAdded, result.ToModel());
 			}
 			catch (Exception ex)
 			{
@@ -64,10 +70,12 @@ namespace StenfordAPI.Controllers
 		[Route("edit")]
 		public BaseResponse EditShowroom([FromBody] ShowroomModel model)
 		{
-			try
+            string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            try
 			{
 				var dto = model.ToModel();
-				var result = _showroomRepository.EditShowroom(dto, Guid.Parse("11111111-1111-1111-1111-111111111111"));
+				var result = _showroomRepository.EditShowroom(dto, Guid.Parse(CV.AspNetUserId(token)));
+				//var result = _showroomRepository.EditShowroom(dto, Guid.Parse("11111111-1111-1111-1111-111111111111"));
 				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomUpdated, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.ShowroomNotFound);
 			}
 			catch (Exception ex)
@@ -80,10 +88,12 @@ namespace StenfordAPI.Controllers
 		[Route("delete")]
 		public BaseResponse DeleteShowroom([FromQuery]int showroomId)
 		{
-			try
+            string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            try
 			{
-				var result = _showroomRepository.DeleteShowroom(showroomId, Guid.Parse("11111111-1111-1111-1111-111111111111"));
-				return result ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomDeleted) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.ShowroomNotFound);
+				var result = _showroomRepository.DeleteShowroom(showroomId, Guid.Parse(CV.AspNetUserId(token)));
+				//var result = _showroomRepository.DeleteShowroom(showroomId, Guid.Parse("11111111-1111-1111-1111-111111111111"));
+                return result ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomDeleted) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.ShowroomNotFound);
 			}
 			catch (Exception ex)
 			{

@@ -53,38 +53,38 @@ namespace Stenford.Service.JwtToken
 			return new JwtSecurityTokenHandler().WriteToken(token);
 		}
 
-		//public bool ValidateToken(string token, out JwtSecurityToken jwtSecurityToken)
-		//{
-		//	jwtSecurityToken = null;
-		//	if (token == null)
-		//	{
-		//		return false;
-		//	}
+		public bool ValidateToken(string token, out JwtSecurityToken jwtSecurityToken)
+		{
+			jwtSecurityToken = null;
+			if (token == null)
+			{
+				return false;
+			}
 
-		//	var tokenHandler = new JwtSecurityTokenHandler();
-		//	var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
-		//	try
-		//	{
-		//		tokenHandler.ValidateToken(token, new TokenValidationParameters
-		//		{
-		//			ValidateIssuerSigningKey = true,
-		//			IssuerSigningKey = new SymmetricSecurityKey(key),
-		//			ValidateIssuer = true,
-		//			ValidateLifetime = true,
-		//			ValidateAudience = false,
-		//			ValidIssuer = _config["Jwt:Issuer"],
-		//			ClockSkew = TimeSpan.Zero
-		//		}, out SecurityToken validatedToken);
+			var tokenHandler = new JwtSecurityTokenHandler();
+			var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
+			try
+			{
+				tokenHandler.ValidateToken(token, new TokenValidationParameters
+				{
+					ValidateIssuerSigningKey = true,
+					IssuerSigningKey = new SymmetricSecurityKey(key),
+					ValidateIssuer = true,
+					ValidateLifetime = true,
+					ValidateAudience = false,
+					ValidIssuer = _config["Jwt:Issuer"],
+					ClockSkew = TimeSpan.Zero
+				}, out SecurityToken validatedToken);
 
-		//		jwtSecurityToken = (JwtSecurityToken)validatedToken;
-		//		if (jwtSecurityToken != null)
-		//			return true;
-		//		return false;
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return (false);
-		//	}
-		//}
+				jwtSecurityToken = (JwtSecurityToken)validatedToken;
+				if (jwtSecurityToken != null)
+					return true;
+				return false;
+			}
+			catch (Exception ex)
+			{
+				return (false);
+			}
+		}
 	}
 }

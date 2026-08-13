@@ -47,5 +47,7 @@ namespace StenfordAPI.Helper.Mapper.SalesPerson
 			IMapper mapper = config.CreateMapper();
 			return mapper.Map<SalesPersonDetailDTO, SalesPersonDetailModel>(entity);
 		}
-	}
+
+        
+    }
 }

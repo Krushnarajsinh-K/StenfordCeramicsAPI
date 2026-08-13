@@ -14,5 +14,7 @@ namespace Stenford.Service.Dropdown
 		List<StateDropdownDTO> GetStateList();
 		List<CityDropdownDTO> GetCityListByStateId(int stateId);
 		List<ShowroomDropdownDTO> GetShowroomDropdownList();
-	}
+
+		List<SalesPersonDropdownDTO> GetSalesPersonDropdownList();
+    }
 }

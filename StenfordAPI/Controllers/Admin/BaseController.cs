@@ -79,7 +79,7 @@ namespace Stenford.Controllers.Admin
 							<p><strong>Stack Trace:</strong> <pre>
 						{ex.StackTrace}</pre>";
 
-			EmailHelper.SendMail("chudasamakrushnarajsinh05@gmail.com", "Stenford News Api Exception Mail " + DateTime.Now, emailBody, ", rahul.shah@uniqueconsumerservices.com");
+			EmailHelper.SendMail("chudasamakrushnarajsinh05@gmail.com", "Stenford News Api Exception Mail " + DateTime.Now, emailBody);
 
 			var response = new BaseResponse()
 			{

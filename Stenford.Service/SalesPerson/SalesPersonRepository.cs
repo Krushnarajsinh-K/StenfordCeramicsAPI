@@ -1,4 +1,5 @@
-﻿using Stenford.Domain;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Stenford.Domain;
 using Stenford.Domain.DataContext;
 using Stenford.Domain.DataModels;
 using System;
@@ -57,59 +58,85 @@ namespace Stenford.Service.SalesPerson
 									   VisitCount = salesPerson.VisVisits.Count()
 								   }).ToList();
 
-			int totalCount = salesPersonList.Count();
+            //int totalCount = salesPersonList.Count();
 
-			var result = salesPersonList
-							.Skip((pageNumber - 1) * pageSize)
-							.Take(pageSize)
-							.ToList();
+            //var result = salesPersonList
+            //				.Skip((pageNumber - 1) * pageSize)
+            //				.Take(pageSize)
+            //				.ToList();
 
-			result.ForEach(x => x.TotalRecords = totalCount);
-			return result;
-		}
+            //result.ForEach(x => x.TotalRecords = totalCount);
+            //return result;
 
-		public SalesPersonDTO AddSalesPerson(SalesPersonDTO salesPersonDTO, string aspnetUserId)
-		{
-			Guid createdBy = Guid.Parse(aspnetUserId);
+            if (salesPersonList.Any())
+            {
+                var totalRecords = salesPersonList.Count;
+                salesPersonList = salesPersonList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                salesPersonList.First().TotalRecords = totalRecords;
+            }
 
-			AspAspNetUser user = new AspAspNetUser();
-			user.AspNetUserId = Guid.NewGuid();
-			user.Username = salesPersonDTO.Email;
-			user.PasswordHash = salesPersonDTO.Password; // already encrypted by controller
-			user.CreatedAt = DateTime.Now;
-			user.CreatedBy = createdBy;
-			user.ModifiedAt = DateTime.Now;
-			user.ModifiedBy = createdBy;
-			_context.AspAspNetUsers.Add(user);
+            return salesPersonList;
+        }
 
-			SecSalesPerson salesPerson = new SecSalesPerson();
-			salesPerson.AspNetUserId = user.AspNetUserId;
-			salesPerson.SalesPersonName = salesPersonDTO.SalesPersonName;
-			salesPerson.Email = salesPersonDTO.Email;
-			salesPerson.Password = salesPersonDTO.Password; // already encrypted by controller
-			salesPerson.ContactPerson = salesPersonDTO.ContactPerson;
-			salesPerson.PrimaryContact = salesPersonDTO.PrimaryContact;
-			salesPerson.SecondaryContact = salesPersonDTO.SecondaryContact;
-			salesPerson.Address = salesPersonDTO.Address;
-			salesPerson.CountryId = 101;
-			salesPerson.StateId = salesPersonDTO.StateId;
-			salesPerson.CityId = salesPersonDTO.CityId;
-			salesPerson.IsActive = true;
-			salesPerson.IsDeleted = false;
-			salesPerson.CreatedAt = DateTime.Now;
-			salesPerson.CreatedBy = createdBy;
-			salesPerson.ModifiedAt = DateTime.Now;
-			salesPerson.ModifiedBy = createdBy;
-			_context.SecSalesPeople.Add(salesPerson);
+        public SalesPersonDTO AddSalesPerson(SalesPersonDTO salesPersonDTO, string aspnetUserId)
+        {
+            Guid createdBy = Guid.Parse(aspnetUserId);
+            Guid newAspNetUserId = Guid.NewGuid();
 
-			_context.SaveChanges();
+            AspAspNetUser user = new AspAspNetUser();
+            user.AspNetUserId = newAspNetUserId;
+            user.Username = salesPersonDTO.Email;
+            user.PasswordHash = salesPersonDTO.Password; // already encrypted by controller
+            user.IsDeleted = false;
+            user.CreatedAt = DateTime.Now;
+            user.CreatedBy = createdBy;
+            user.ModifiedAt = DateTime.Now;
+            user.ModifiedBy = createdBy;
+            _context.AspAspNetUsers.Add(user);
 
-			salesPersonDTO.SalesPersonId = salesPerson.SalesPersonId;
-			salesPersonDTO.AspNetUserId = user.AspNetUserId;
-			return salesPersonDTO;
-		}
+            var salesPersonRole = _context.AspAspNetUserRoles.FirstOrDefault(r => r.AspNetUserRole == "SalesPerson" && r.IsDeleted == false);
 
-		public SalesPersonDTO EditSalesPerson(SalesPersonDTO salesPersonDTO, string aspnetUserId)
+            if (salesPersonRole != null)
+            {
+                AspAspNetUserWiseRole userWiseRole = new AspAspNetUserWiseRole();
+                userWiseRole.AspNetUserId = newAspNetUserId;
+                userWiseRole.AspNetUserRoleId = salesPersonRole.AspNetUserRoleId;
+                userWiseRole.IsDeleted = false;
+                userWiseRole.CreatedAt = DateTime.Now;
+                userWiseRole.CreatedBy = createdBy;
+                userWiseRole.ModifiedAt = DateTime.Now;
+                userWiseRole.ModifiedBy = createdBy;
+                _context.AspAspNetUserWiseRoles.Add(userWiseRole);
+            }
+
+            SecSalesPerson salesPerson = new SecSalesPerson();
+            salesPerson.AspNetUserId = newAspNetUserId;
+            salesPerson.SalesPersonName = salesPersonDTO.SalesPersonName;
+            salesPerson.Email = salesPersonDTO.Email;
+            salesPerson.Password = salesPersonDTO.Password;
+            salesPerson.ContactPerson = salesPersonDTO.ContactPerson;
+            salesPerson.PrimaryContact = salesPersonDTO.PrimaryContact;
+            salesPerson.SecondaryContact = salesPersonDTO.SecondaryContact;
+            salesPerson.Address = salesPersonDTO.Address;
+            salesPerson.CountryId = 101;
+            salesPerson.StateId = salesPersonDTO.StateId;
+            salesPerson.CityId = salesPersonDTO.CityId;
+            salesPerson.IsActive = true;
+            salesPerson.IsDeleted = false;
+            salesPerson.CreatedAt = DateTime.Now;
+            salesPerson.CreatedBy = createdBy;
+            salesPerson.ModifiedAt = DateTime.Now;
+            salesPerson.ModifiedBy = createdBy;
+            _context.SecSalesPeople.Add(salesPerson);
+
+            _context.SaveChanges();
+
+            salesPersonDTO.SalesPersonId = salesPerson.SalesPersonId;
+            salesPersonDTO.AspNetUserId = newAspNetUserId;
+            return salesPersonDTO;
+        }
+
+        public SalesPersonDTO EditSalesPerson(SalesPersonDTO salesPersonDTO, string aspnetUserId)
 		{
 			var salesPerson = _context.SecSalesPeople.FirstOrDefault(x => x.SalesPersonId == salesPersonDTO.SalesPersonId && x.IsDeleted == false);
 
@@ -196,6 +223,7 @@ namespace Stenford.Service.SalesPerson
 										 orderby v.VisitDate descending
 										 select new VisitTimelineDTO
 										 {
+											 VisitId = v.VisitId,
 											 SalesPersonName = salesPerson.SalesPersonName,
 											 VisitDate = v.VisitDate,
 											 ShowroomName = showroom.ShowroomName,
@@ -206,5 +234,7 @@ namespace Stenford.Service.SalesPerson
 
 			return salesPerson;
 		}
-	}
+
+        
+    }
 }

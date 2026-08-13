@@ -19,5 +19,6 @@
 		public int? VisitCount { get; set; }
 		public bool? IsActive { get; set; }
 		public int? TotalRecords { get; set; }
-	}	
+	}
+
 }

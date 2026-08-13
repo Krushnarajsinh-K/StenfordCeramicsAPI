@@ -11,7 +11,9 @@
 		public string State { get; set; } = null!;
 		public string LastVisit { get; set; } = null!;
 		public List<ShowroomVisitTimelineModel> VisitTimeline { get; set; } = new();
-	}
+
+        public List<string> Photos { get; set; } = new();
+    }
 
 	public class ShowroomVisitTimelineModel
 	{

@@ -19,5 +19,11 @@
 			public int Id { get; set; }
 			public string? Data { get; set; }
 		}
-	}
+
+        public class SalesPersonDropdownViewModel
+        {
+            public int Id { get; set; }
+            public string? Data { get; set; }
+        }
+    }
 }

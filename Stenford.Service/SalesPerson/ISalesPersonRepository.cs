@@ -21,5 +21,5 @@ namespace Stenford.Service.SalesPerson
 		bool DeleteSalesPerson(int salesPersonId, string aspnetUserId);
 
 		SalesPersonDetailDTO GetSalesPersonById(int salesPersonId);
-	}
+    }
 }

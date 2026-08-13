@@ -36,10 +36,11 @@ namespace Stenford.Service.Account
                 return null;
             }
 
-            var userWiseRole = _context.AspAspNetUserWiseRoles
-    .FirstOrDefault(x => x.AspNetUserId == aspNetUserId && x.IsDeleted == false);
+            var userWiseRole = _context.AspAspNetUserWiseRoles.FirstOrDefault(x => x.AspNetUserId == aspNetUserId && x.IsDeleted == false);
+            int aspNetUserWiseRoleId = userWiseRole != null ? userWiseRole.AspNetUserWiseRoleId : 0;
 
             var admin = _context.SecAdmins.FirstOrDefault(a => a.AspNetUserId == aspNetUserId && a.IsDeleted == false);
+
             if (admin != null)
             {
                 return new UserJwtDTO
@@ -51,7 +52,7 @@ namespace Stenford.Service.Account
                     RoleName = "Admin",
                     AdminID = admin.AdminId,
                     SalesPersonID = 0,
-                    AspNetUserWiseRoleId = userWiseRole.AspNetUserWiseRoleId
+                    AspNetUserWiseRoleId = aspNetUserWiseRoleId
                 };
             }
 
@@ -67,11 +68,75 @@ namespace Stenford.Service.Account
                     RoleName = "SalesPerson",
                     AdminID = 0,
                     SalesPersonID = salesPerson.SalesPersonId,
-                    AspNetUserWiseRoleId = userWiseRole.AspNetUserWiseRoleId
+                    AspNetUserWiseRoleId = aspNetUserWiseRoleId
                 };
             }
 
             return null;
+        }
+
+        public ProfileDTO GetProfile(Guid aspNetUserId)
+        {
+            try
+            {
+                // Step 1: Get role first
+                var userWiseRole = _context.AspAspNetUserWiseRoles.FirstOrDefault(x => x.AspNetUserId == aspNetUserId && x.IsDeleted == false);
+                int roleId = 0;
+                string roleName = null;
+                if (userWiseRole != null)
+                {
+                    var role = _context.AspAspNetUserRoles.FirstOrDefault(r => r.AspNetUserRoleId == userWiseRole.AspNetUserRoleId && r.IsDeleted == false);
+                    if (role != null)
+                    {
+                        roleId = role.AspNetUserRoleId;
+                        roleName = role.AspNetUserRole;
+                    }
+                }
+
+                // Step 2: Check Admin first
+                var admin = _context.SecAdmins.FirstOrDefault(a => a.AspNetUserId == aspNetUserId && a.IsDeleted == false);
+                if (admin != null)
+                {
+                    return new ProfileDTO
+                    {
+                        AdminId = admin.AdminId,
+                        Name = admin.UserName,
+                        RoleId = roleId,
+                        RoleName = roleName
+                    };
+                }
+
+                // Step 3: Otherwise check SalesPerson
+                var salesPerson = (from sp in _context.SecSalesPeople
+                                   join state in _context.LocStates on sp.StateId equals state.StateId into stateJoin
+                                   from state in stateJoin.DefaultIfEmpty()
+                                   where sp.AspNetUserId == aspNetUserId && sp.IsDeleted == false
+                                   select new ProfileDTO
+                                   {
+                                       SalesPersonId = sp.SalesPersonId,
+                                       Name = sp.SalesPersonName,
+                                       PrimaryContact = sp.PrimaryContact,
+                                       State = state.StateName,
+                                       RoleId = roleId,
+                                       RoleName = roleName
+                                   }).FirstOrDefault();
+
+                if (salesPerson == null)
+                {
+                    return null;
+                }
+
+                var visits = _context.VisVisits.Where(v => v.SalesPersonId == salesPerson.SalesPersonId && v.IsDeleted == false).ToList();
+                salesPerson.TotalVisits = visits.Count;
+                salesPerson.ShowroomCount = visits.Select(v => v.ShowroomId).Distinct().Count();
+                salesPerson.ThisMonthVisits = visits.Count(v => v.VisitDate.Month == DateTime.Now.Month && v.VisitDate.Year == DateTime.Now.Year);
+
+                return salesPerson;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

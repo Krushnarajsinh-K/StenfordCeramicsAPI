@@ -64,7 +64,7 @@ public partial class SecSalesPerson
     public string Password { get; set; } = null!;
 
     [StringLength(256)]
-    public string ContactPerson { get; set; } = null!;
+    public string? ContactPerson { get; set; }
 
     [ForeignKey("AspNetUserId")]
     [InverseProperty("SecSalesPeople")]

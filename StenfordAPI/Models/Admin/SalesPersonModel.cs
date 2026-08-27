@@ -6,7 +6,7 @@
 		public string SalesPersonName { get; set; } = null!;
 		public string Email { get; set; } = null!;
 		public string Password { get; set; } = null!;
-		public string ContactPerson { get; set; } = null!;
+		//public string ContactPerson { get; set; } = null!;
 		public string PrimaryContact { get; set; } = null!;
 		public string? SecondaryContact { get; set; }
 		public string Address { get; set; } = null!;

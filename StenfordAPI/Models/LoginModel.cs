@@ -23,9 +23,11 @@
 
     public class ProfileModel
     {
-        public int? SalesPersonId { get; set; }
-        public int? AdminId { get; set; }
-        public string Name { get; set; } = null!;
+        public int? SalesPersonID { get; set; }
+        public int? AdminID { get; set; }
+        public string UserName { get; set; } = null!;
+        public string EmailId { get; set; } = null!;
+
         public int RoleId { get; set; }
         public string RoleName { get; set; } = null!;
         public string? PrimaryContact { get; set; }

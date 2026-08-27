@@ -4,13 +4,17 @@
 	{
 		public int ShowroomId { get; set; }
 		public string ShowroomName { get; set; } = null!;
-		public string DealerName { get; set; } = null!;
+        public string? GoogleLink { get; set; }
+        public string DealerName { get; set; } = null!;
 		public string PrimaryContact { get; set; } = null!;
-		public string Address { get; set; } = null!;
+        public string? SecondaryContact { get; set; }
+        public string Address { get; set; } = null!;
 		public string City { get; set; } = null!;
 		public string State { get; set; } = null!;
 		public string LastVisit { get; set; } = null!;
-		public List<ShowroomVisitTimelineModel> VisitTimeline { get; set; } = new();
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
+        public List<ShowroomVisitTimelineModel> VisitTimeline { get; set; } = new();
 
         public List<string> Photos { get; set; } = new();
     }

@@ -47,7 +47,7 @@ namespace Stenford.Service.Visit
 												   SalesPersonName = sp.SalesPersonName,
 												   VisitDate = v.VisitDate,
 												   DiscussionNotes = v.DiscussionNotes,
-												   Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
+												   //Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
 												   ShowroomId = v.ShowroomId,
 
 											   }).ToList();
@@ -87,7 +87,7 @@ namespace Stenford.Service.Visit
 							 SalesPersonName = sp.SalesPersonName,
 							 VisitDate = v.VisitDate,
 							 DiscussionNotes = v.DiscussionNotes,
-							 Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
+							 //Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
 							 Latitude = v.Latitude,
 							 Longitude = v.Longitude,
 							 VoiceNotePath = CommonHelper.GetFullImagePath(v.VoiceNotePath),
@@ -235,7 +235,7 @@ namespace Stenford.Service.Visit
             visit.Latitude = visitDTO.Latitude;
             visit.Longitude = visitDTO.Longitude;
             visit.DiscussionNotes = visitDTO.DiscussionNotes;
-            visit.ProductsDiscussedString = string.Join("@#$%^&**&^%$#@", visitDTO.Products);
+            //visit.ProductsDiscussedString = string.Join("@#$%^&**&^%$#@", visitDTO.Products);
             visit.VoiceNotePath = visitDTO.VoiceNotePath;
             visit.VisitingCardFrontPath = visitDTO.VisitingCardFrontPath;
             visit.VisitingCardBackPath = visitDTO.VisitingCardBackPath;
@@ -297,7 +297,7 @@ namespace Stenford.Service.Visit
                                                SalesPersonName = sp.SalesPersonName,
                                                VisitDate = v.VisitDate,
                                                DiscussionNotes = v.DiscussionNotes,
-                                               Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
+                                               //Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
                                                VoiceNotePath = CommonHelper.GetFullImagePath(v.VoiceNotePath),
                                                VisitingCardFrontPath = CommonHelper.GetFullImagePath(v.VisitingCardFrontPath),
                                                VisitingCardBackPath = CommonHelper.GetFullImagePath(v.VisitingCardBackPath)

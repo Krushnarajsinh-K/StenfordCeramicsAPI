@@ -4,10 +4,14 @@
 	{
 		public int SalesPersonId { get; set; }
 		public string SalesPersonName { get; set; } = null!;
-		public string PrimaryContact { get; set; } = null!;
-		public string State { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string PrimaryContact { get; set; } = null!;
+        public string? SecondaryContact { get; set; }
+        public string State { get; set; } = null!;
 		public string City { get; set; } = null!;
-		public bool IsActive { get; set; }
+        public string Address { get; set; } = null!;
+        public bool IsActive { get; set; }
 		public int TotalVisits { get; set; }
 		public int ShowroomCount { get; set; }
 		public int ThisMonthVisits { get; set; }

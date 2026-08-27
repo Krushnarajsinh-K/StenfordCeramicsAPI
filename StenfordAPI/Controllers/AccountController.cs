@@ -104,11 +104,21 @@ namespace StenfordAPI.Controllers
             {
                 var result = new
                 {
+                    //AspNetUserId = CV.AspNetUserId(token),
+                    //AdminId = CV.AdminId(token),
+                    //SalesPersonId = CV.SalesPersonId(token),
+                    //AssociateId = CV.AssociateId(token),
+                    //AspNetUserWiseRoleId = CV.AspNetUserWiseRoleId(token),
+                    //RoleName = CV.RoleName(token),
+                    //UserName = CV.UserName(token),
+                    //ClaimTypesEmail = CV.ClaimTypesEmail(token),
+                    //ClaimTypesNameIdentifier = CV.ClaimTypesNameIdentifier(token)
+
                     AspNetUserId = CV.AspNetUserId(token),
-                    AdminId = CV.AdminId(token),
-                    SalesPersonId = CV.SalesPersonId(token),
-                    AssociateId = CV.AssociateId(token),
-                    AspNetUserWiseRoleId = CV.AspNetUserWiseRoleId(token),
+                    AdminId = int.Parse(CV.AdminId(token)),
+                    SalesPersonId = int.Parse(CV.SalesPersonId(token)),
+                    AssociateId = int.Parse(CV.AssociateId(token)),
+                    AspNetUserWiseRoleId = int.Parse(CV.AspNetUserWiseRoleId(token)),
                     RoleName = CV.RoleName(token),
                     UserName = CV.UserName(token),
                     ClaimTypesEmail = CV.ClaimTypesEmail(token),
@@ -138,7 +148,7 @@ namespace StenfordAPI.Controllers
                     return ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
                 }
 
-                var message = result.AdminId.HasValue ? ConstantMessage.AdminProfileFetched : ConstantMessage.SalesPersonFetched;
+                var message = result.AdminID.HasValue ? ConstantMessage.AdminProfileFetched : ConstantMessage.SalesPersonFetched;
                 return ApiSuccess(Enums.StatusCode.Ok, message, result.ToModel());
             }
             catch (Exception ex)

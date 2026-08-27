@@ -6,7 +6,7 @@
 		public string ShowroomName { get; set; } = null!;
 		public string? GoogleLink { get; set; }
 		public string DealerName { get; set; } = null!;
-		public string ContactPersonName { get; set; } = null!;
+		//public string ContactPersonName { get; set; } = null!;
 		public string PrimaryContact { get; set; } = null!;
 		public string? SecondaryContact { get; set; }
 		public string Address { get; set; } = null!;

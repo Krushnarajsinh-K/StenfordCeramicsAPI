@@ -16,7 +16,7 @@
 				public string Email { get; set; } = null!;
 				public string Password { get; set; } = null!;
 
-				public string ContactPerson { get; set; } = null!;
+				//public string ContactPerson { get; set; } = null!;
 				public string PrimaryContact { get; set; } = null!;
 				public string? SecondaryContact { get; set; }
 				public string Address { get; set; } = null!;
@@ -46,7 +46,11 @@
 			{
 				public int SalesPersonId { get; set; }
 				public string SalesPersonName { get; set; } = null!;
+				public string Email { get; set; } = null!;
+				public string Password { get; set; } = null!;
 				public string PrimaryContact { get; set; } = null!;
+				public string? SecondaryContact { get; set; }
+				public string Address { get; set; } = null!;
 				public string State { get; set; } = null!;
 				public string City { get; set; } = null!;
 				public bool IsActive { get; set; }
@@ -73,7 +77,7 @@
 				public string ShowroomName { get; set; } = null!;
 				public string? GoogleLink { get; set; }
 				public string DealerName { get; set; } = null!;
-				public string ContactPersonName { get; set; } = null!;
+				//public string ContactPersonName { get; set; } = null!;
 				public string PrimaryContact { get; set; } = null!;
 				public string? SecondaryContact { get; set; }
 				public string Address { get; set; } = null!;
@@ -91,11 +95,15 @@
 				public int ShowroomId { get; set; }
 				public string ShowroomName { get; set; } = null!;
 				public string DealerName { get; set; } = null!;
+				public string? GoogleLink { get; set; }
 				public string PrimaryContact { get; set; } = null!;
+				public string? SecondaryContact { get; set; }
 				public string Address { get; set; } = null!;
 				public string City { get; set; } = null!;
 				public string State { get; set; } = null!;
 				public string LastVisit { get; set; } = null!;
+				public decimal? Latitude { get; set; }
+				public decimal? Longitude { get; set; }
 				public List<ShowroomVisitTimelineDTO> VisitTimeline { get; set; } = new();
 
 				public List<string> Photos { get; set; } = new();
@@ -122,7 +130,7 @@
 			public decimal Latitude { get; set; }
 			public decimal Longitude { get; set; }
 			public string DiscussionNotes { get; set; } = null!;
-			public List<string> Products { get; set; } = new();
+			//public List<string> Products { get; set; } = new();
 			public int TotalRecords { get; set; }
 
 			public string? VoiceNotePath { get; set; }
@@ -143,7 +151,7 @@
 			public decimal Latitude { get; set; }
 			public decimal Longitude { get; set; }
 			public string DiscussionNotes { get; set; } = null!;
-			public List<string> Products { get; set; } = new();
+			//public List<string> Products { get; set; } = new();
 
 			public string? VoiceNotePath { get; set; }
 			public string? VisitingCardFrontPath { get; set; }
@@ -242,9 +250,11 @@
 
         public class ProfileDTO
         {
-            public int? SalesPersonId { get; set; }
-            public int? AdminId { get; set; }
-            public string Name { get; set; } = null!;
+            public int? SalesPersonID { get; set; }
+            public int? AdminID { get; set; }
+            public string EmailId { get; set; }
+
+            public string UserName { get; set; } = null!;
             public int RoleId { get; set; }
             public string RoleName { get; set; } = null!;
             public string? PrimaryContact { get; set; }

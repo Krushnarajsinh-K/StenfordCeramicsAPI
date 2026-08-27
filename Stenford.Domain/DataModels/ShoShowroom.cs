@@ -22,7 +22,7 @@ public partial class ShoShowroom
     public string DealerName { get; set; } = null!;
 
     [StringLength(256)]
-    public string ContactPersonName { get; set; } = null!;
+    public string? ContactPersonName { get; set; }
 
     [StringLength(20)]
     public string PrimaryContact { get; set; } = null!;

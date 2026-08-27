@@ -42,7 +42,7 @@ namespace Stenford.Service.Dashboard
 										  join city in _context.LocCities on showroom.CityId equals city.CityId into cityJoin
 										  from city in cityJoin.DefaultIfEmpty()
 										  where v.IsDeleted != true 
-										  orderby v.CreatedAt descending
+										  orderby v.VisitDate descending
 										  select new RecentVisitDTO
 										  {
 											  VisitId = v.VisitId,

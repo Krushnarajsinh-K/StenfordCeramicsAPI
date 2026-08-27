@@ -99,8 +99,9 @@ namespace Stenford.Service.Account
                 {
                     return new ProfileDTO
                     {
-                        AdminId = admin.AdminId,
-                        Name = admin.UserName,
+                        AdminID = admin.AdminId,
+                        UserName = admin.UserName,
+                        EmailId = admin.Email,
                         RoleId = roleId,
                         RoleName = roleName
                     };
@@ -113,8 +114,9 @@ namespace Stenford.Service.Account
                                    where sp.AspNetUserId == aspNetUserId && sp.IsDeleted == false
                                    select new ProfileDTO
                                    {
-                                       SalesPersonId = sp.SalesPersonId,
-                                       Name = sp.SalesPersonName,
+                                       SalesPersonID = sp.SalesPersonId,
+                                       UserName = sp.SalesPersonName,
+                                       EmailId = sp.Email,
                                        PrimaryContact = sp.PrimaryContact,
                                        State = state.StateName,
                                        RoleId = roleId,
@@ -126,7 +128,7 @@ namespace Stenford.Service.Account
                     return null;
                 }
 
-                var visits = _context.VisVisits.Where(v => v.SalesPersonId == salesPerson.SalesPersonId && v.IsDeleted == false).ToList();
+                var visits = _context.VisVisits.Where(v => v.SalesPersonId == salesPerson.SalesPersonID && v.IsDeleted == false).ToList();
                 salesPerson.TotalVisits = visits.Count;
                 salesPerson.ShowroomCount = visits.Select(v => v.ShowroomId).Distinct().Count();
                 salesPerson.ThisMonthVisits = visits.Count(v => v.VisitDate.Month == DateTime.Now.Month && v.VisitDate.Year == DateTime.Now.Year);

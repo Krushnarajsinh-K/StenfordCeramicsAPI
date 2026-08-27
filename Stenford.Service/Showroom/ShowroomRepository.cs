@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UniqueITAdminPanel.Common.Utility;
 using static Stenford.Domain.DTO;
 
 namespace Stenford.Service.Showroom
@@ -41,7 +42,7 @@ namespace Stenford.Service.Showroom
 														 ShowroomName = showroom.ShowroomName,
 														 GoogleLink = showroom.GoogleLink,
 														 DealerName = showroom.DealerName,
-														 ContactPersonName = showroom.ContactPersonName,
+														 //ContactPersonName = showroom.ContactPersonName,
 														 PrimaryContact = showroom.PrimaryContact,
 														 SecondaryContact = showroom.SecondaryContact,
 														 Address = showroom.Address,
@@ -72,7 +73,7 @@ namespace Stenford.Service.Showroom
 			showroom.ShowroomName = showroomDTO.ShowroomName;
 			showroom.GoogleLink = showroomDTO.GoogleLink;
 			showroom.DealerName = showroomDTO.DealerName;
-			showroom.ContactPersonName = showroomDTO.ContactPersonName;
+			//showroom.ContactPersonName = showroomDTO.ContactPersonName;
 			showroom.PrimaryContact = showroomDTO.PrimaryContact;
 			showroom.SecondaryContact = showroomDTO.SecondaryContact;
 			showroom.Address = showroomDTO.Address;
@@ -101,16 +102,19 @@ namespace Stenford.Service.Showroom
 				return null;
 			}
 
-			showroom.ShowroomName = showroomDTO.ShowroomName;
-			showroom.DealerName = showroomDTO.DealerName;
-			showroom.PrimaryContact = showroomDTO.PrimaryContact;
-			showroom.Address = showroomDTO.Address;
-			showroom.StateId = showroomDTO.StateId;
-			showroom.CityId = showroomDTO.CityId;
-			showroom.ModifiedAt = DateTime.Now;
-			showroom.ModifiedBy = aspnetUserId;
+            showroom.ShowroomName = showroomDTO.ShowroomName;
+            showroom.GoogleLink = showroomDTO.GoogleLink;
+            showroom.DealerName = showroomDTO.DealerName;
+            //showroom.ContactPersonName = showroomDTO.ContactPersonName;
+            showroom.PrimaryContact = showroomDTO.PrimaryContact;
+            showroom.SecondaryContact = showroomDTO.SecondaryContact;
+            showroom.Address = showroomDTO.Address;
+            showroom.StateId = showroomDTO.StateId;
+            showroom.CityId = showroomDTO.CityId;
+            showroom.ModifiedAt = DateTime.Now;
+            showroom.ModifiedBy = aspnetUserId;
 
-			_context.SaveChanges();
+            _context.SaveChanges();
 			return showroomDTO;
 		}
 
@@ -145,8 +149,10 @@ namespace Stenford.Service.Showroom
 							{
 								ShowroomId = s.ShowroomId,
 								ShowroomName = s.ShowroomName,
+								GoogleLink = s.GoogleLink,
 								DealerName = s.DealerName,
 								PrimaryContact = s.PrimaryContact,
+								SecondaryContact = s.SecondaryContact,
 								Address = s.Address,
 								City = city.CityName,
 								State = state.StateName
@@ -157,22 +163,40 @@ namespace Stenford.Service.Showroom
 				return null;
 			}
 
-			var lastVisitDate = _context.VisVisits
+            //var lastVisitDate = _context.VisVisits
+            //	.Where(v => v.ShowroomId == showroomId && v.IsDeleted == false)
+            //	.OrderByDescending(v => v.VisitDate)
+            //	.Select(v => v.VisitDate)
+            //	.FirstOrDefault();
+
+            //if (lastVisitDate == default)
+            //{
+            //	showroom.LastVisit = "No visits yet";
+            //}
+            //else
+            //{
+            //	showroom.LastVisit = StringUtility.ToRelativeTimeString(lastVisitDate);
+            //             showroom.Latitude = showroom.Latitude;
+            //             showroom.Longitude = showroom.Longitude;
+            //}
+
+            var lastVisit = _context.VisVisits
 				.Where(v => v.ShowroomId == showroomId && v.IsDeleted == false)
 				.OrderByDescending(v => v.VisitDate)
-				.Select(v => v.VisitDate)
 				.FirstOrDefault();
 
-			if (lastVisitDate == default)
-			{
-				showroom.LastVisit = "No visits yet";
-			}
-			else
-			{
-				showroom.LastVisit = StringUtility.ToRelativeTimeString(lastVisitDate);
-			}
+            if (lastVisit == null)
+            {
+                showroom.LastVisit = "No visits yet";
+            }
+            else
+            {
+                showroom.LastVisit = StringUtility.ToRelativeTimeString(lastVisit.VisitDate);
+                showroom.Latitude = lastVisit.Latitude;
+                showroom.Longitude = lastVisit.Longitude;
+            }
 
-			showroom.VisitTimeline = (from v in _context.VisVisits
+            showroom.VisitTimeline = (from v in _context.VisVisits
 									  join sp in _context.SecSalesPeople on v.SalesPersonId equals sp.SalesPersonId
 									  where v.ShowroomId == showroomId && v.IsDeleted == false
 									  orderby v.VisitDate descending
@@ -182,40 +206,43 @@ namespace Stenford.Service.Showroom
 										  SalesPersonName = sp.SalesPersonName,
 										  VisitDate = v.VisitDate,
 										  DiscussionNotes = v.DiscussionNotes,
-										  Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
+										  //Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
 									  }).ToList();
 
-			//--------------------------------------------------------
+            //--------------------------------------------------------
 
             showroom.Photos = new List<string>();
 
             var visits = _context.VisVisits
                 .Where(v => v.ShowroomId == showroomId && v.IsDeleted == false)
-                .OrderBy(v => v.VisitDate)
+                .OrderByDescending(v => v.VisitDate)
                 .ToList();
 
             foreach (var visit in visits)
             {
                 if (!string.IsNullOrEmpty(visit.VisitingCardFrontPath))
                 {
-                    showroom.Photos.Add(visit.VisitingCardFrontPath);
+                    showroom.Photos.Add(CommonHelper.GetFullImagePath(visit.VisitingCardFrontPath));
                 }
 
                 if (!string.IsNullOrEmpty(visit.VisitingCardBackPath))
                 {
-                    showroom.Photos.Add(visit.VisitingCardBackPath);
+                    showroom.Photos.Add(CommonHelper.GetFullImagePath(visit.VisitingCardBackPath));
                 }
 
                 var attachments = _context.VisVisitWiseAttachments
                     .Where(a => a.VisitId == visit.VisitId && a.IsDeleted == false)
-                    .OrderBy(a => a.CreatedAt)
+                    .OrderByDescending(a => a.CreatedAt)
                     .Select(a => a.AttachmentPath)
                     .ToList();
 
-                showroom.Photos.AddRange(attachments);
+                foreach (var attachmentPath in attachments)
+                {
+                    showroom.Photos.Add(CommonHelper.GetFullImagePath(attachmentPath));
+                }
             }
 
             return showroom;
-		}
+        }
 	}
 }

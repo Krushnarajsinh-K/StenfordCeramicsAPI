@@ -12,7 +12,7 @@
 		public decimal Latitude { get; set; }
 		public decimal Longitude { get; set; }
 		public string DiscussionNotes { get; set; } = null!;
-		public List<string> Products { get; set; } = new();
+		//public List<string> Products { get; set; } = new();
 		public int TotalRecords { get; set; }
 		public string? VoiceNotePath { get; set; }
 		public string? VisitingCardFrontPath { get; set; }
@@ -27,7 +27,7 @@
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public string DiscussionNotes { get; set; } = null!;
-        public List<string> Products { get; set; } = new();
+        //public List<string> Products { get; set; } = new();
 
         public IFormFile? VoiceNote { get; set; }
         public IFormFile? VisitingCardFront { get; set; }

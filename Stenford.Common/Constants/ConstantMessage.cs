@@ -75,5 +75,7 @@ namespace Stenford.Common.Constants
         public const string AdminProfileFetched = "Admin profile fetched successfully.";
 
         public const string ReportFetched = "Report data fetched successfully.";
+
+        public const string SalesPersonEmailAlreadyExists = "A sales person with this email already exists.";
     }
 }

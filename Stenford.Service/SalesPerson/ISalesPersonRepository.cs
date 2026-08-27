@@ -16,9 +16,10 @@ namespace Stenford.Service.SalesPerson
 
 		SalesPersonDTO EditSalesPerson(SalesPersonDTO salesPersonDTO, string aspnetUserId);
 
-		bool IsSalesPersonNameExists(string salesPersonName);
+        //bool IsSalesPersonNameExists(string salesPersonName);
+        bool IsSalesPersonNameExists(string salesPersonName, int? excludeSalesPersonId = null);
 
-		bool DeleteSalesPerson(int salesPersonId, string aspnetUserId);
+        bool DeleteSalesPerson(int salesPersonId, string aspnetUserId);
 
 		SalesPersonDetailDTO GetSalesPersonById(int salesPersonId);
     }

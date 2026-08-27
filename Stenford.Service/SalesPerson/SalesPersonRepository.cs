@@ -45,7 +45,8 @@ namespace Stenford.Service.SalesPerson
 									   AspNetUserId = salesPerson.AspNetUserId,
 									   SalesPersonName = salesPerson.SalesPersonName,
 									   Email = salesPerson.Email,
-									   ContactPerson = salesPerson.ContactPerson,
+                                       Password = salesPerson.Password,
+									   //ContactPerson = salesPerson.ContactPerson,
 									   PrimaryContact = salesPerson.PrimaryContact,
 									   SecondaryContact = salesPerson.SecondaryContact,
 									   Address = salesPerson.Address,
@@ -80,6 +81,12 @@ namespace Stenford.Service.SalesPerson
 
         public SalesPersonDTO AddSalesPerson(SalesPersonDTO salesPersonDTO, string aspnetUserId)
         {
+            
+
+            if (_context.AspAspNetUsers.Any(u => u.Username.ToLower() == salesPersonDTO.Email.ToLower() && u.IsDeleted == false))
+            {
+                return null; // duplicate email — reject
+            }
             Guid createdBy = Guid.Parse(aspnetUserId);
             Guid newAspNetUserId = Guid.NewGuid();
 
@@ -114,7 +121,7 @@ namespace Stenford.Service.SalesPerson
             salesPerson.SalesPersonName = salesPersonDTO.SalesPersonName;
             salesPerson.Email = salesPersonDTO.Email;
             salesPerson.Password = salesPersonDTO.Password;
-            salesPerson.ContactPerson = salesPersonDTO.ContactPerson;
+            //salesPerson.ContactPerson = salesPersonDTO.ContactPerson;
             salesPerson.PrimaryContact = salesPersonDTO.PrimaryContact;
             salesPerson.SecondaryContact = salesPersonDTO.SecondaryContact;
             salesPerson.Address = salesPersonDTO.Address;
@@ -136,35 +143,96 @@ namespace Stenford.Service.SalesPerson
             return salesPersonDTO;
         }
 
+        //      public SalesPersonDTO EditSalesPerson(SalesPersonDTO salesPersonDTO, string aspnetUserId)
+        //{
+        //	var salesPerson = _context.SecSalesPeople.FirstOrDefault(x => x.SalesPersonId == salesPersonDTO.SalesPersonId && x.IsDeleted == false);
+
+        //	if (salesPerson == null)
+        //	{
+        //		return null;
+        //	}
+
+        //	salesPerson.SalesPersonName = salesPersonDTO.SalesPersonName;
+        //	salesPerson.PrimaryContact = salesPersonDTO.PrimaryContact;
+        //	salesPerson.StateId = salesPersonDTO.StateId;
+        //	salesPerson.CityId = salesPersonDTO.CityId;
+        //	salesPerson.IsActive = salesPersonDTO.IsActive;
+        //	salesPerson.ModifiedAt = DateTime.Now;
+        //	salesPerson.ModifiedBy = Guid.Parse(aspnetUserId);
+
+        //	_context.SaveChanges();
+
+        //	salesPersonDTO.AspNetUserId = salesPerson.AspNetUserId;
+        //	return salesPersonDTO;
+        //}
+
         public SalesPersonDTO EditSalesPerson(SalesPersonDTO salesPersonDTO, string aspnetUserId)
-		{
-			var salesPerson = _context.SecSalesPeople.FirstOrDefault(x => x.SalesPersonId == salesPersonDTO.SalesPersonId && x.IsDeleted == false);
+        {
+            var salesPerson = _context.SecSalesPeople.FirstOrDefault(x => x.SalesPersonId == salesPersonDTO.SalesPersonId && x.IsDeleted == false);
 
-			if (salesPerson == null)
-			{
-				return null;
-			}
+            if (salesPerson == null)
+            {
+                return null; // NOT FOUND
+            }
 
-			salesPerson.SalesPersonName = salesPersonDTO.SalesPersonName;
-			salesPerson.PrimaryContact = salesPersonDTO.PrimaryContact;
-			salesPerson.StateId = salesPersonDTO.StateId;
-			salesPerson.CityId = salesPersonDTO.CityId;
-			salesPerson.IsActive = salesPersonDTO.IsActive;
-			salesPerson.ModifiedAt = DateTime.Now;
-			salesPerson.ModifiedBy = Guid.Parse(aspnetUserId);
+            if (!string.Equals(salesPerson.Email, salesPersonDTO.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                bool emailTaken = _context.AspAspNetUsers.Any(u => u.Username.ToLower() == salesPersonDTO.Email.ToLower() && u.IsDeleted == false && u.AspNetUserId != salesPerson.AspNetUserId);
+                if (emailTaken)
+                {
+                    salesPersonDTO.SalesPersonId = -1; // sentinel flag: DUPLICATE EMAIL (not "not found")
+                    return salesPersonDTO;
+                }
+            }
 
-			_context.SaveChanges();
+            Guid modifiedBy = Guid.Parse(aspnetUserId);
 
-			salesPersonDTO.AspNetUserId = salesPerson.AspNetUserId;
-			return salesPersonDTO;
-		}
+            salesPerson.SalesPersonName = salesPersonDTO.SalesPersonName;
+            salesPerson.Email = salesPersonDTO.Email;
+            salesPerson.Password = salesPersonDTO.Password;
+            //salesPerson.ContactPerson = salesPersonDTO.ContactPerson;
+            salesPerson.PrimaryContact = salesPersonDTO.PrimaryContact;
+            salesPerson.SecondaryContact = salesPersonDTO.SecondaryContact;
+            salesPerson.Address = salesPersonDTO.Address;
+            salesPerson.StateId = salesPersonDTO.StateId;
+            salesPerson.CityId = salesPersonDTO.CityId;
+            salesPerson.IsActive = salesPersonDTO.IsActive;
+            salesPerson.ModifiedAt = DateTime.Now;
+            salesPerson.ModifiedBy = modifiedBy;
 
-		public bool IsSalesPersonNameExists(string salesPersonName)
-		{
-			return _context.SecSalesPeople.Any(x => x.SalesPersonName.ToLower() == salesPersonName.ToLower() && x.IsDeleted == false);
-		}
+            var loginUser = _context.AspAspNetUsers.FirstOrDefault(u => u.AspNetUserId == salesPerson.AspNetUserId && u.IsDeleted == false);
+            if (loginUser != null)
+            {
+                loginUser.Username = salesPersonDTO.Email;
+                loginUser.ModifiedAt = DateTime.Now;
+                loginUser.ModifiedBy = modifiedBy;
 
-		public bool DeleteSalesPerson(int salesPersonId, string aspnetUserId)
+                if (!string.IsNullOrEmpty(salesPersonDTO.Password))
+                {
+                    salesPerson.Password = salesPersonDTO.Password;
+                    loginUser.PasswordHash = salesPersonDTO.Password;
+                }
+            }
+
+            _context.SaveChanges();
+
+            salesPersonDTO.AspNetUserId = salesPerson.AspNetUserId;
+            return salesPersonDTO;
+        }
+
+        //      public bool IsSalesPersonNameExists(string salesPersonName)
+        //{
+        //	return _context.SecSalesPeople.Any(x => x.SalesPersonName.ToLower() == salesPersonName.ToLower() && x.IsDeleted == false);
+        //}
+
+        public bool IsSalesPersonNameExists(string salesPersonName, int? excludeSalesPersonId = null)
+        {
+            return _context.SecSalesPeople.Any(x => x.SalesPersonName.ToLower() == salesPersonName.ToLower()
+                && x.IsDeleted == false
+                && (!excludeSalesPersonId.HasValue || x.SalesPersonId != excludeSalesPersonId));
+        }
+
+        public bool DeleteSalesPerson(int salesPersonId, string aspnetUserId)
 		{
 			var salesPerson = _context.SecSalesPeople.FirstOrDefault(x => x.SalesPersonId == salesPersonId && x.IsDeleted == false);
 
@@ -196,9 +264,13 @@ namespace Stenford.Service.SalesPerson
 							   {
 								   SalesPersonId = sp.SalesPersonId,
 								   SalesPersonName = sp.SalesPersonName,
+                                   Email = sp.Email,
+                                   Password = sp.Password,
 								   PrimaryContact = sp.PrimaryContact,
+                                   SecondaryContact = sp.SecondaryContact,
 								   State = state.StateName,
 								   City = city.CityName,
+                                   Address = sp.Address,
 								   IsActive = sp.IsActive
 							   }).FirstOrDefault();
 
@@ -229,7 +301,7 @@ namespace Stenford.Service.SalesPerson
 											 ShowroomName = showroom.ShowroomName,
 											 Location = city.CityName + ", " + state.StateName,
 											 DiscussionNotes = v.DiscussionNotes,
-											 Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
+											 //Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList()
 										 }).ToList();
 
 			return salesPerson;

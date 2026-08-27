@@ -39,7 +39,14 @@ namespace StenfordAPI.Controllers.Admin
 					return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.InvalidPageNumberOrPageSize);
 				}
 				var salesPersonList = _salesPersonRepository.GetSalesPersonDataList(pageNumber.Value, pageSize.Value, searchText, stateId, cityId).ToModel();
-				return (salesPersonList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonListFetched, salesPersonList, salesPersonList.First()?.TotalRecords) 
+                foreach (var salesPerson in salesPersonList)
+                {
+                    if (!string.IsNullOrEmpty(salesPerson.Password))
+                    {
+                        salesPerson.Password = StringUtility.DecryptString(salesPerson.Password);
+                    }
+                }
+                return (salesPersonList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonListFetched, salesPersonList, salesPersonList.First()?.TotalRecords) 
 					: ApiSuccess(Enums.StatusCode.Ok, "SalesPerson List Empty!",new List<int>());
 			}
 			catch (Exception ex)
@@ -65,34 +72,69 @@ namespace StenfordAPI.Controllers.Admin
                 var result = _salesPersonRepository.AddSalesPerson(dto, CV.AspNetUserId(token));
                 //var result = _salesPersonRepository.AddSalesPerson(dto, "11111111-1111-1111-1111-111111111111");
 
-                return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonAdded, result.ToModel());
-			}
+                //return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonAdded, result.ToModel());
+                return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonAdded, result.ToModel()) : ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.SalesPersonEmailAlreadyExists);
+            }
 			catch (Exception ex)
 			{
 				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
 			}
 		}
 
-		[HttpPost]
-		[Route("edit")]
-		public BaseResponse EditSalesPerson([FromBody] SalesPersonModel model)
-		{
+        //[HttpPost]
+        //[Route("edit")]
+        //public BaseResponse EditSalesPerson([FromBody] SalesPersonModel model)
+        //{
+        //          string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+        //          try
+        //	{
+        //		var dto = model.ToModel();
+        //		var result = _salesPersonRepository.EditSalesPerson(dto, CV.AspNetUserId(token));
+        //		//var result = _salesPersonRepository.EditSalesPerson(dto, "11111111-1111-1111-1111-111111111111");
+
+        //              return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonUpdated, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
+        //	}
+        //	catch (Exception ex)
+        //	{
+        //		return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+        //	}
+        //}
+
+        [HttpPost]
+        [Route("edit")]
+        public BaseResponse EditSalesPerson([FromBody] SalesPersonModel model)
+        {
             string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             try
-			{
-				var dto = model.ToModel();
-				var result = _salesPersonRepository.EditSalesPerson(dto, CV.AspNetUserId(token));
-				//var result = _salesPersonRepository.EditSalesPerson(dto, "11111111-1111-1111-1111-111111111111");
+            {
+                if (_salesPersonRepository.IsSalesPersonNameExists(model.SalesPersonName, model.SalesPersonId))
+                {
+                    return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.SalesPersonNameAlreadyExists);
+                }
 
-                return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonUpdated, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
-			}
-			catch (Exception ex)
-			{
-				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
-			}
-		}
+                var dto = model.ToModel();
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    dto.Password = StringUtility.EncryptString(model.Password);
+                }
+                var result = _salesPersonRepository.EditSalesPerson(dto, CV.AspNetUserId(token));
+                if (result == null)
+                {
+                    return ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
+                }
+                if (result.SalesPersonId == -1)
+                {
+                    return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.SalesPersonEmailAlreadyExists);
+                }
+                return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonUpdated, result.ToModel());
+            }
+            catch (Exception ex)
+            {
+                return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+            }
+        }
 
-		[HttpDelete]
+        [HttpDelete]
 		[Route("delete")]
 		public BaseResponse DeleteSalesPerson([FromQuery] int salesPersonId)
 		{
@@ -109,21 +151,25 @@ namespace StenfordAPI.Controllers.Admin
 			}
 		}
 
-		[HttpGet]
-		[Route("details")]
-		public BaseResponse GetSalesPersonById([FromQuery] int salesPersonId)
-		{
+        [HttpGet]
+        [Route("details")]
+        public BaseResponse GetSalesPersonById([FromQuery] int salesPersonId)
+        {
             try
-			{
-				var result = _salesPersonRepository.GetSalesPersonById(salesPersonId);
-				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonFetched, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
-			}
-			catch (Exception ex)
-			{
-				return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
-			}
-		}
+            {
+                var result = _salesPersonRepository.GetSalesPersonById(salesPersonId);
+                if (result != null && !string.IsNullOrEmpty(result.Password))
+                {
+                    result.Password = StringUtility.DecryptString(result.Password);
+                }
+                return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.SalesPersonFetched, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.SalesPersonNotFound);
+            }
+            catch (Exception ex)
+            {
+                return ApiException(Enums.StatusCode.ServerError, ex.Message, ex, ConstantMessage.InternalServerError);
+            }
+        }
 
-        
+
     }
 }
